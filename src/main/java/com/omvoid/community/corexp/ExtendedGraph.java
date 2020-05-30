@@ -28,10 +28,7 @@ class ExtendedGraph<V,E> {
 
         //Initializing mappedVertex and vertexWeights
         AtomicInteger increment = new AtomicInteger();
-        graph.vertexSet().forEach( v -> {
-            mappedVertex.addToValue(v, increment.getAndIncrement());
-            vertexWeights.addToValue(increment.get(), 0);
-        });
+        graph.vertexSet().forEach( v -> mappedVertex.addToValue(v, increment.incrementAndGet()));
 
         fastutilGraph = new FastutilMapIntVertexGraph<DefaultWeightedEdge>(
                 SupplierUtil.createIntegerSupplier(),
@@ -53,5 +50,9 @@ class ExtendedGraph<V,E> {
                 );
             }
         });
+    }
+
+    public FastutilMapIntVertexGraph<DefaultWeightedEdge> getFastutilGraph() {
+        return fastutilGraph;
     }
 }
