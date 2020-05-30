@@ -1,5 +1,9 @@
 package com.omvoid.community.corexp;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
+
 class VertexWeightProcessor {
 
     /**
@@ -9,7 +13,14 @@ class VertexWeightProcessor {
      * @param extendedGraph
      */
     public void calculateWeight(ExtendedGraph extendedGraph) {
-        //TODO
+
+        final FastutilMapIntVertexGraph<DefaultWeightedEdge> graph = extendedGraph.getFastutilGraph();
+        final var vertexMap = extendedGraph.getVertexWeights();
+
+        extendedGraph.getMappedVertex().forEach( v -> vertexMap.put(v,
+            graph.edgesOf(v).stream().mapToDouble(graph::getEdgeWeight).sum()
+        ));
+
     }
 
 }
