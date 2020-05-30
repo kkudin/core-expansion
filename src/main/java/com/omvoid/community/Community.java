@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Community {
 
-    long getId();
-    List<Vertex> getVertexes();
+    int getId();
+    List<Integer> getVertexes();
 
 }

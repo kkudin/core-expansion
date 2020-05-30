@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface CommunityAlgorithm {
 
-    List<Community> getCommunities(Graph<Vertex, Edge> graph);
+    List<Community> getCommunities(Graph graph);
 
 }
