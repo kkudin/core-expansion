@@ -25,7 +25,7 @@ class ExtendedGraph<V,E> {
         //Initializing mappedVertex and vertexWeights
         AtomicInteger increment = new AtomicInteger();
         graph.vertexSet().forEach( v -> {
-            mappedVertex.addToValue(v, increment.getAndIncrement());
+            mappedVertex.addToValue(v, increment.incrementAndGet());
             vertexWeights.addToValue(increment.get(), 0);
         });
 

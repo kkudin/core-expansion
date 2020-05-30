@@ -19,7 +19,6 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
 
     public List<Community> getCommunities(Graph graph) {
-        List<Community> result = new ArrayList<>();
 
         ExtendedGraph extendedGraph = new ExtendedGraph(graph);
 
@@ -39,22 +38,19 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
         List<Integer> foundVertexes = new ArrayList<>();
 
         while(true) {
-
-            int found_count = 0;
-
             for(var v : unclassifedVertexes) {
                 int foundCommunity = closesVertexFinder.find(communityMap.keySet(), v, extendedGraph);
                 if(foundCommunity != -1) {
                     foundVertexes.add(v);
                     communityMap.get(foundCommunity).add(v);
-                    found_count++;
                 }
             }
 
-            if(found_count == 0) {
+            if(foundVertexes.size() == 0) {
                 break;
             }
             unclassifedVertexes.removeAll(foundVertexes);
+            foundVertexes.clear();
         }
 
         return communityMap.keySet().stream()
