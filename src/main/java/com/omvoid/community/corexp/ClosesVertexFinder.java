@@ -2,10 +2,14 @@ package com.omvoid.community.corexp;
 
 import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
-import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 class ClosesVertexFinder {
 
@@ -22,51 +26,86 @@ class ClosesVertexFinder {
      * value of sum. In such cases n is left unclassified until the next iteration.
      * @return
      * @param cores
-     * @param v
      * @param extendedGraph
+     * @param unclassifiedVertexes
      */
-    <V, E> int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph<V, E> extendedGraph) {
-        var g = extendedGraph.getFastutilGraph();
+    <V, E> IntIntHashMap findAll(
+            IntIntHashMap cores, ExtendedGraph<V, E> extendedGraph,
+            IntHashSet unclassifiedVertexes
+    ) throws InterruptedException {
+        FastutilMapIntVertexGraph<DefaultWeightedEdge> g = extendedGraph.getFastutilGraph();
+        IntIntHashMap results = new IntIntHashMap(unclassifiedVertexes.size());
 
-        Set<Integer> nn = NeighbourhoodFinder.find(g, v);
-        IntDoubleHashMap candidates = new IntDoubleHashMap(nn.size());
+        ExecutorService pool = Executors.newCachedThreadPool();
 
-        nn.forEach(
-                n -> {
-                    cores.forEachKeyValue(
-                            (coreId, core) -> {
-                                if (core.contains(n)) {
-                                    candidates.put(
-                                            coreId,
-                                            candidates.getIfAbsent(coreId, .0) + g.getEdgeWeight(
-                                                    g.getEdge(v, n)
-                                            )
-                                    );
-                                }
-                            }
-                    );
-                }
+        unclassifiedVertexes.forEach(
+                v -> pool.submit(new findCoreTask(cores, v, g, results))
         );
 
-        int closestCore = -1;
-        double maxWeight = Double.NEGATIVE_INFINITY;
-        int cnt = 1;
+        pool.shutdown();
+        pool.awaitTermination(15L, TimeUnit.MINUTES);
 
-        for (IntDoublePair candidate : candidates.keyValuesView()) {
-            if (candidate.getTwo() > maxWeight) {
-                maxWeight = candidate.getTwo();
-                closestCore = candidate.getOne();
-                cnt = 1;
-            } else if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
-                cnt++;
-            }
-        }
-
-        if (cnt == 1) {
-            return closestCore;
-        } else {
-            return -1; // Vertex is left unclassified until the next iteration.
-        }
+        return results;
     }
 
+    static class findCoreTask implements Runnable {
+        private final FastutilMapIntVertexGraph<DefaultWeightedEdge> g;
+        private final IntIntHashMap cores;
+        private final int v;
+        private final IntIntHashMap results;
+
+        findCoreTask(
+                IntIntHashMap cores, Integer v,
+                FastutilMapIntVertexGraph<DefaultWeightedEdge> g,
+                IntIntHashMap results
+        ) {
+            this.g = g;
+            this.v = v;
+            this.cores = cores;
+            this.results = results;
+        }
+
+        @Override
+        public void run() {
+            IntDoubleHashMap candidates = new IntDoubleHashMap();
+
+            g.edgesOf(v).forEach(e -> {
+                int n;
+                if (g.getEdgeSource(e).equals(v)) {
+                    n = g.getEdgeTarget(e);
+                } else {
+                    n = g.getEdgeSource(e);
+                }
+
+                int neighbourComm = cores.get(n);
+
+                if (neighbourComm != -1) {
+                    candidates.put(
+                            neighbourComm,
+                            candidates.getIfAbsent(neighbourComm, 0.0) + g.getEdgeWeight(e)
+                    );
+                }
+            });
+
+            int closestCore = -1;
+            double maxWeight = Double.NEGATIVE_INFINITY;
+            int cnt = 1;
+
+            for (IntDoublePair candidate : candidates.keyValuesView()) {
+                if (candidate.getTwo() > maxWeight) {
+                    maxWeight = candidate.getTwo();
+                    closestCore = candidate.getOne();
+                    cnt = 1;
+                } else if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
+                    cnt++;
+                }
+            }
+
+            if (cnt == 1) {
+                results.put(v, closestCore);
+            } else {
+                results.put(v, -1); // Vertex is left unclassified until the next iteration.
+            }
+        }
+    }
 }

@@ -1,18 +1,15 @@
 package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.List;
 
 class YoutubeCommunitiesTest {
 
     @Test
-    public void createTest() throws IOException {
+    public void createTest() throws IOException, InterruptedException {
 
         CommunityAlgorithm ca = new CoreExpansionAlgorithmImpl();
         var graph = GraphReaderTestUtil.readCsvGraph(this.getClass().getResourceAsStream("/com-youtube.ungraph.txt"));

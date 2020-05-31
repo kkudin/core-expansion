@@ -10,7 +10,7 @@ import java.util.List;
 class ExtendedGraphTest {
 
     @Test
-    public void createTest() throws IOException {
+    public void createTest() throws IOException, InterruptedException {
 
         CommunityAlgorithm ca = new CoreExpansionAlgorithmImpl();
         var graph = GraphReaderTestUtil.readCsvGraph(this.getClass().getResourceAsStream("/graph.cvs"));

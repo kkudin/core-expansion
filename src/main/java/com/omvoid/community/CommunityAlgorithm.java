@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface CommunityAlgorithm {
 
-    <V,E> List<Community<V>> computeCommunities(Graph<V,E> graph);
+    <V,E> List<Community<V>> computeCommunities(Graph<V,E> graph) throws InterruptedException;
 
 }
