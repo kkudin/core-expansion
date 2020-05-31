@@ -1,5 +1,14 @@
 package com.omvoid.community.corexp;
 
+import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
+
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +30,50 @@ class ClosesVertexFinder {
      * @param v
      * @param extendedGraph
      */
-    int find(Set<Integer> cores, Integer v, ExtendedGraph extendedGraph) {
-        //TODO
-        return -1;
+    int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph extendedGraph) {
+        FastutilMapIntVertexGraph<DefaultWeightedEdge> g = extendedGraph.getFastutilGraph();
+
+        Set<Integer> nn = NeighbourhoodFinder.find(g, v);
+        IntDoubleHashMap candidates = new IntDoubleHashMap(nn.size());
+
+        nn.forEach(
+                n -> {
+                    cores.forEachKeyValue(
+                            (coreId, core) -> {
+                                if (core.contains(n)) {
+                                    candidates.put(
+                                            coreId,
+                                            candidates.getIfAbsent(coreId, .0) + g.getEdgeWeight(
+                                                    g.getEdge(v, n)
+                                            )
+                                    );
+                                }
+                            }
+                    );
+                }
+        );
+
+        int closestCore = -1;
+        double maxWeight = Double.NEGATIVE_INFINITY;
+        int cnt = 1;
+
+        for (IntDoublePair candidate : candidates.keyValuesView()) {
+            if (candidate.getTwo() > maxWeight) {
+                maxWeight = candidate.getTwo();
+                closestCore = candidate.getOne();
+                cnt = 1;
+            }
+
+            if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
+                cnt++;
+            }
+        }
+
+        if (cnt == 1) {
+            return closestCore;
+        } else {
+            return -1; // Vertex is left unclassified until the next iteration.
+        }
     }
 
 }
