@@ -42,8 +42,12 @@ class CoresFinder {
     private void checkCore(int v) {
         double vW = vertexWeights.get(v);
         Set<Integer> nn = getNeighbourHood(v);
+        IntHashSet coreVertices = new IntHashSet();
+        coreVertices.add(v);
+
         if (nn.size() == 0) {
             visited.add(v);
+            cores.put(v, coreVertices);
             return;
         }
 
@@ -58,9 +62,6 @@ class CoresFinder {
                 equalsWeightsNodes.add(n);
             }
         }
-
-        IntHashSet coreVertices = new IntHashSet();
-        coreVertices.add(v);
 
         equalsWeightsNodes.forEach(
                 candidate -> {
