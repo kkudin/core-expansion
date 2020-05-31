@@ -19,9 +19,9 @@ class ExtendedGraph<V,E> {
 
     private final Graph<V,E> graph;
 
-    private IntDoubleHashMap vertexWeights = new IntDoubleHashMap();
-    private ObjectIntHashMap<V> mappedVertex = new ObjectIntHashMap<V>();
-    private FastutilMapIntVertexGraph<DefaultWeightedEdge> fastutilGraph;
+    private final IntDoubleHashMap vertexWeights = new IntDoubleHashMap();
+    private final ObjectIntHashMap<V> mappedVertex = new ObjectIntHashMap<V>();
+    private final FastutilMapIntVertexGraph<DefaultWeightedEdge> fastutilGraph;
 
     public ExtendedGraph(Graph<V,E> graph) {
         this.graph = graph;

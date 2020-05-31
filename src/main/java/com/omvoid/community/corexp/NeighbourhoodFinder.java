@@ -1,6 +1,5 @@
 package com.omvoid.community.corexp;
 
-import org.jgrapht.Graph;
 import org.jgrapht.graph.AbstractBaseGraph;
 
 import java.util.Set;

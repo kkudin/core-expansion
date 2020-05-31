@@ -3,30 +3,31 @@ package com.omvoid.community.corexp;
 import com.omvoid.community.Community;
 import com.omvoid.community.CommunityAlgorithm;
 import com.omvoid.community.DefaultCommunity;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.jgrapht.Graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
-    private VertexWeightProcessor vertexWeightProcessor = new VertexWeightProcessor();
-    private EdgeWeightProcessor edgeWeightProcessor = new EdgeWeightProcessor();
-    private CoresFinder coresFinder = new CoresFinder();
-    private ClosesVertexFinder closesVertexFinder = new ClosesVertexFinder();
+    private final VertexWeightProcessor vertexWeightProcessor = new VertexWeightProcessor();
+    private final EdgeWeightProcessor edgeWeightProcessor = new EdgeWeightProcessor();
+    private final CoresFinder coresFinder = new CoresFinder();
+    private final ClosesVertexFinder closesVertexFinder = new ClosesVertexFinder();
 
 
-    public List<Community> computeCommunities(Graph graph) {
+    public <V,E> List<Community<V>> computeCommunities(Graph<V,E> graph) {
 
-        ExtendedGraph extendedGraph = new ExtendedGraph(graph);
+        var extendedGraph = new ExtendedGraph<>(graph);
 
         vertexWeightProcessor.calculateWeight(extendedGraph);
         edgeWeightProcessor.calculateWeight(extendedGraph);
 
-        Map<Integer, List<Integer>> communityMap = coresFinder.find(extendedGraph);
-        List<Integer> unclassifedVertexes = new ArrayList<>();
+        var communityMap = coresFinder.find(extendedGraph);
+        IntArrayList unclassifedVertexes = new IntArrayList();
 
         extendedGraph.getMappedVertex().values().forEach( v -> {
             if(!communityMap.containsKey(v)) {
@@ -39,16 +40,16 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
                 .filter(l -> l.size() > 0)
                 .forEach(unclassifedVertexes::removeAll);
 
-        List<Integer> foundVertexes = new ArrayList<>();
+        IntArrayList foundVertexes = new IntArrayList();
 
         while(true) {
-            for(var v : unclassifedVertexes) {
-                int foundCommunity = closesVertexFinder.find(communityMap.keySet(), v, extendedGraph);
+            unclassifedVertexes.forEach(v -> {
+                int foundCommunity = closesVertexFinder.find(communityMap, v, extendedGraph);
                 if(foundCommunity != -1) {
                     foundVertexes.add(v);
                     communityMap.get(foundCommunity).add(v);
                 }
-            }
+            });
 
             if(foundVertexes.size() == 0) {
                 break;
@@ -57,9 +58,20 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
             foundVertexes.clear();
         }
 
-        return communityMap.keySet().stream()
-                .map(c ->  new DefaultCommunity(c, communityMap.get(c)))
-                .collect(Collectors.toList());
+
+        Map<Integer,V> reversed = new HashMap<>();
+        extendedGraph.getMappedVertex().forEachKeyValue( (k,v) -> {
+            reversed.put(v, k);
+        });
+
+        var result = new ArrayList<Community<V>>();
+        communityMap.forEachKeyValue((k, v) -> {
+            List<V> vertexes = new ArrayList<>();
+            v.forEach(cv -> vertexes.add(reversed.get(cv)));
+            result.add(new DefaultCommunity<>(reversed.get(k), vertexes));
+        });
+
+        return result;
 
     }
 }

@@ -4,7 +4,6 @@ import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
-import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
 import java.util.Set;
 
@@ -26,8 +25,8 @@ class ClosesVertexFinder {
      * @param v
      * @param extendedGraph
      */
-    int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph extendedGraph) {
-        FastutilMapIntVertexGraph g = extendedGraph.getFastutilGraph();
+    <V, E> int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph<V, E> extendedGraph) {
+        var g = extendedGraph.getFastutilGraph();
 
         Set<Integer> nn = NeighbourhoodFinder.find(g, v);
         IntDoubleHashMap candidates = new IntDoubleHashMap(nn.size());
