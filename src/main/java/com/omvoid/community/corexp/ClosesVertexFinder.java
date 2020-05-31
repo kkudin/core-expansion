@@ -57,9 +57,7 @@ class ClosesVertexFinder {
                 maxWeight = candidate.getTwo();
                 closestCore = candidate.getOne();
                 cnt = 1;
-            }
-
-            if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
+            } else if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
                 cnt++;
             }
         }

@@ -20,7 +20,5 @@ class VertexWeightProcessor {
         extendedGraph.getMappedVertex().forEach( v -> vertexMap.put(v,
             graph.edgesOf(v).stream().mapToDouble(graph::getEdgeWeight).sum()
         ));
-
     }
-
 }

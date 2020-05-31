@@ -1,14 +1,9 @@
 package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultUndirectedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ExtendedGraphTest {
 
@@ -20,7 +15,6 @@ class ExtendedGraphTest {
 
         var result = ca.computeCommunities(graph);
         assert result != null;
-
     }
 
 }

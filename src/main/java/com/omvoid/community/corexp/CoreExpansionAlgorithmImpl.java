@@ -23,8 +23,8 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
         var extendedGraph = new ExtendedGraph<>(graph);
 
-        vertexWeightProcessor.calculateWeight(extendedGraph);
         edgeWeightProcessor.calculateWeight(extendedGraph);
+        vertexWeightProcessor.calculateWeight(extendedGraph);
 
         var communityMap = coresFinder.find(extendedGraph);
         IntArrayList unclassifedVertexes = new IntArrayList();
