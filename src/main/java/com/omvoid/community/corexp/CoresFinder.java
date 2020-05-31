@@ -2,6 +2,8 @@ package com.omvoid.community.corexp;
 
 
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
@@ -11,7 +13,8 @@ import java.util.stream.Collectors;
 class CoresFinder {
     private FastutilMapIntVertexGraph<DefaultWeightedEdge> g;
     private IntDoubleHashMap vertexWeights;
-    private Map<Integer, List<Integer>> cores;
+    private IntObjectHashMap<IntHashSet> cores;
+    private IntHashSet visited;
 
     /**
      * Given the node weights, find the initial community cores,
@@ -23,11 +26,12 @@ class CoresFinder {
      *
      * @param graph
      */
-    public Map<Integer, List<Integer>> find(ExtendedGraph graph) {
+    public IntObjectHashMap<IntHashSet> find(ExtendedGraph graph) {
         g = graph.getFastutilGraph();
-        vertexWeights = graph.getVertexWeights();
 
-        cores = new HashMap<>();
+        vertexWeights = graph.getVertexWeights();
+        visited = new IntHashSet(g.vertexSet().size());
+        cores = new IntObjectHashMap<>();
         for (int v : g.vertexSet()) {
             checkCore(v);
         }
@@ -38,12 +42,16 @@ class CoresFinder {
     private void checkCore(int v) {
         double vW = vertexWeights.get(v);
         Set<Integer> nn = getNeighbourHood(v);
-        if (nn.size() == 0) {return;}
+        if (nn.size() == 0) {
+            visited.add(v);
+            return;
+        }
 
-        Set<Integer> equalsWeightsNodes = new HashSet<>();
+        IntHashSet equalsWeightsNodes = new IntHashSet();
 
         for (int n : nn) {
             if (vertexWeights.get(n) > vW) {
+                visited.add(v);
                 return;
             }
             if (Double.compare(vertexWeights.get(n), vW) == 0) {
@@ -51,17 +59,22 @@ class CoresFinder {
             }
         }
 
-        ArrayList<Integer> coreVertices = new ArrayList<>(List.of(v));
-        for (int coreCandidate : coreVertices) {
-            if (cores.containsKey(coreCandidate)) {
-                return;
-            }
-            else {
-                coreVertices.add(coreCandidate);
-            }
-        }
+        IntHashSet coreVertices = new IntHashSet();
+        coreVertices.add(v);
+
+        equalsWeightsNodes.forEach(
+                candidate -> {
+                    if (visited.contains(candidate)) {
+                        visited.add(v);
+                        return;
+                    }
+
+                    coreVertices.add(candidate);
+                }
+        );
 
         cores.put(v, coreVertices);
+        visited.add(v);
     }
 
     private Set<Integer> getNeighbourHood(int v) {
