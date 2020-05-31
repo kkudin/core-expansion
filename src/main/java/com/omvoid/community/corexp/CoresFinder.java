@@ -2,17 +2,14 @@ package com.omvoid.community.corexp;
 
 
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
-import java.util.*;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 class CoresFinder {
-    private FastutilMapIntVertexGraph<DefaultWeightedEdge> g;
-    private IntDoubleHashMap vertexWeights;
-    private Map<Integer, List<Integer>> cores;
-
     /**
      * Given the node weights, find the initial community cores,
      * where each core is a local maximum node. A node is local
@@ -23,27 +20,37 @@ class CoresFinder {
      *
      * @param graph
      */
-    public Map<Integer, List<Integer>> find(ExtendedGraph graph) {
-        g = graph.getFastutilGraph();
-        vertexWeights = graph.getVertexWeights();
-
-        cores = new HashMap<>();
-        for (int v : g.vertexSet()) {
-            checkCore(v);
+    public IntObjectHashMap<IntHashSet> find(ExtendedGraph graph) {
+        Set<Integer> vertices = graph.getFastutilGraph().vertexSet();
+        IntHashSet visited = new IntHashSet(vertices.size());
+        IntObjectHashMap<IntHashSet> cores = new IntObjectHashMap<>();
+        for (int v : vertices) {
+            applyAdditionalCores(v, graph.getVertexWeights(), visited, cores, graph.getFastutilGraph());
         }
 
         return cores;
     }
 
-    private void checkCore(int v) {
+    private void applyAdditionalCores(
+            int v, IntDoubleHashMap vertexWeights,
+            IntHashSet visited, IntObjectHashMap<IntHashSet> cores,
+            FastutilMapIntVertexGraph g) {
         double vW = vertexWeights.get(v);
-        Set<Integer> nn = getNeighbourHood(v);
-        if (nn.size() == 0) {return;}
+        Set<Integer> nn = NeighbourhoodFinder.find(g, v);
+        IntHashSet coreVertices = new IntHashSet();
+        coreVertices.add(v);
 
-        Set<Integer> equalsWeightsNodes = new HashSet<>();
+        if (nn.size() == 0) {
+            visited.add(v);
+            cores.put(v, coreVertices);
+            return;
+        }
+
+        IntHashSet equalsWeightsNodes = new IntHashSet();
 
         for (int n : nn) {
             if (vertexWeights.get(n) > vW) {
+                visited.add(v);
                 return;
             }
             if (Double.compare(vertexWeights.get(n), vW) == 0) {
@@ -51,27 +58,18 @@ class CoresFinder {
             }
         }
 
-        ArrayList<Integer> coreVertices = new ArrayList<>(List.of(v));
-        for (int coreCandidate : coreVertices) {
-            if (cores.containsKey(coreCandidate)) {
-                return;
-            }
-            else {
-                coreVertices.add(coreCandidate);
-            }
-        }
+        equalsWeightsNodes.forEach(
+                candidate -> {
+                    if (visited.contains(candidate)) {
+                        visited.add(v);
+                        return;
+                    }
+
+                    coreVertices.add(candidate);
+                }
+        );
 
         cores.put(v, coreVertices);
-    }
-
-    private Set<Integer> getNeighbourHood(int v) {
-        return g.edgesOf(v).stream().map(e -> {
-            if (g.getEdgeSource(e) == v) {
-                return g.getEdgeTarget(e);
-            }
-            else {
-                return g.getEdgeSource(e);
-            }
-        }).collect(Collectors.toSet());
+        visited.add(v);
     }
 }
