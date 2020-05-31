@@ -15,7 +15,7 @@ class YoutubeCommunitiesTest {
     public void createTest() throws IOException {
 
         CommunityAlgorithm ca = new CoreExpansionAlgorithmImpl();
-        var graph = GraphReaderTestUtil.readCsvGraph(new FileInputStream("d:\\Downloads\\com-youtube.ungraph.txt\\com-youtube.ungraph.txt"));
+        var graph = GraphReaderTestUtil.readCsvGraph(this.getClass().getResourceAsStream("/com-youtube.ungraph.txt"));
 
 
         System.out.println(LocalTime.now());
