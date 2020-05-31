@@ -18,7 +18,7 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
     private ClosesVertexFinder closesVertexFinder = new ClosesVertexFinder();
 
 
-    public List<Community> getCommunities(Graph graph) {
+    public List<Community> computeCommunities(Graph graph) {
 
         ExtendedGraph extendedGraph = new ExtendedGraph(graph);
 
