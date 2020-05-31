@@ -25,15 +25,19 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
         vertexWeightProcessor.calculateWeight(extendedGraph);
         edgeWeightProcessor.calculateWeight(extendedGraph);
 
-        Map<Integer, List<Integer>> communityMap = coresFinder.find(extendedGraph).stream()
-                .collect(Collectors.toMap(c -> c, c -> new ArrayList<>()));
+        Map<Integer, List<Integer>> communityMap = coresFinder.find(extendedGraph);
         List<Integer> unclassifedVertexes = new ArrayList<>();
 
         extendedGraph.getMappedVertex().values().forEach( v -> {
-            if(communityMap.keySet().contains(v)) {
+            if(!communityMap.containsKey(v)) {
                 unclassifedVertexes.add(v);
             }
         });
+
+        communityMap.values()
+                .stream()
+                .filter(l -> l.size() > 0)
+                .forEach(unclassifedVertexes::removeAll);
 
         List<Integer> foundVertexes = new ArrayList<>();
 

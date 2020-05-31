@@ -41,8 +41,12 @@ class EdgeWeightProcessor {
 
     private Set<Integer> getNeighbourHood(int v) {
         return g.edgesOf(v).stream().map(e -> {
-            if (g.getEdgeSource(e) == v) return g.getEdgeTarget(e);
-            else return g.getEdgeSource(e);
+            if (g.getEdgeSource(e) == v) {
+                return g.getEdgeTarget(e);
+            }
+            else {
+                return g.getEdgeSource(e);
+            }
         }).collect(Collectors.toSet());
     }
 }
