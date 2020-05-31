@@ -2,12 +2,12 @@ package com.omvoid.community.corexp;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.concurrent.AsSynchronizedGraph;
+import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 class EdgeWeightProcessor {
-    private AsSynchronizedGraph<Integer, DefaultWeightedEdge> g;
 
     /**
      * Given the network graph G(V,E), compute the weight of
@@ -15,18 +15,17 @@ class EdgeWeightProcessor {
      * This function assigns the neighborhood overlap weight to each edge
      * @param extendedGraph
      */
-    public void calculateWeight(ExtendedGraph extendedGraph) {
-        g = new AsSynchronizedGraph<>(extendedGraph.getFastutilGraph());
-
-        g.edgeSet().forEach(this::processEdge);
+    public <V,E> void calculateWeight(ExtendedGraph<V,E> extendedGraph) {
+        final var graph = extendedGraph.getFastutilGraph();
+        graph.edgeSet().forEach(e -> processEdge(graph, e));
     }
 
-    private void processEdge(DefaultWeightedEdge e) {
-        int src = g.getEdgeSource(e);
-        int dst = g.getEdgeTarget(e);
+    private void processEdge(FastutilMapIntVertexGraph<DefaultWeightedEdge> graph, DefaultWeightedEdge e) {
+        int src = graph.getEdgeSource(e);
+        int dst = graph.getEdgeTarget(e);
 
-        Set<Integer> srcNN = getNeighbourHood(src);
-        Set<Integer> dstNN = getNeighbourHood(dst);
+        Set<Integer> srcNN = NeighbourhoodFinder.find(graph, src);
+        Set<Integer> dstNN = NeighbourhoodFinder.find(graph, dst);
 
         double w = (srcNN.stream().filter(dstNN::contains).count() * 1.0);
         srcNN.addAll(dstNN);
@@ -36,17 +35,6 @@ class EdgeWeightProcessor {
             w = 0.0;
         }
 
-        g.setEdgeWeight(e, w);
-    }
-
-    private Set<Integer> getNeighbourHood(int v) {
-        return g.edgesOf(v).stream().map(e -> {
-            if (g.getEdgeSource(e) == v) {
-                return g.getEdgeTarget(e);
-            }
-            else {
-                return g.getEdgeSource(e);
-            }
-        }).collect(Collectors.toSet());
+        graph.setEdgeWeight(e, w);
     }
 }
