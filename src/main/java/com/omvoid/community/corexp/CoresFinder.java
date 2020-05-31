@@ -43,14 +43,22 @@ class CoresFinder {
         Set<Integer> equalsWeightsNodes = new HashSet<>();
 
         for (int n : nn) {
-            if (vertexWeights.get(n) > vW) {return;}
-            if (Double.compare(vertexWeights.get(n), vW) == 0) equalsWeightsNodes.add(n);
+            if (vertexWeights.get(n) > vW) {
+                return;
+            }
+            if (Double.compare(vertexWeights.get(n), vW) == 0) {
+                equalsWeightsNodes.add(n);
+            }
         }
 
         ArrayList<Integer> coreVertices = new ArrayList<>(List.of(v));
         for (int coreCandidate : coreVertices) {
-            if (cores.containsKey(coreCandidate)) {return;}
-            else coreVertices.add(coreCandidate);
+            if (cores.containsKey(coreCandidate)) {
+                return;
+            }
+            else {
+                coreVertices.add(coreCandidate);
+            }
         }
 
         cores.put(v, coreVertices);
@@ -58,8 +66,12 @@ class CoresFinder {
 
     private Set<Integer> getNeighbourHood(int v) {
         return g.edgesOf(v).stream().map(e -> {
-            if (g.getEdgeSource(e) == v) return g.getEdgeTarget(e);
-            else return g.getEdgeSource(e);
+            if (g.getEdgeSource(e) == v) {
+                return g.getEdgeTarget(e);
+            }
+            else {
+                return g.getEdgeSource(e);
+            }
         }).collect(Collectors.toSet());
     }
 }
