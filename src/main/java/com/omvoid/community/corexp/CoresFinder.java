@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 class CoresFinder {
     /**
