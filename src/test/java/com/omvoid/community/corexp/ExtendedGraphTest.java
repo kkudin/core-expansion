@@ -13,7 +13,7 @@ class ExtendedGraphTest {
     public void createTest() throws IOException {
 
         CommunityAlgorithm ca = new CoreExpansionAlgorithmImpl();
-        var graph = GraphReaderTestUtil.readCsvGraph("/graph.cvs");
+        var graph = GraphReaderTestUtil.readCsvGraph(this.getClass().getResourceAsStream("/graph.cvs"));
 
         var result = ca.computeCommunities(graph);
         assert result != null;
