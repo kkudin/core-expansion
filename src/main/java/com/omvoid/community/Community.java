@@ -2,9 +2,9 @@ package com.omvoid.community;
 
 import java.util.List;
 
-public interface Community {
+public interface Community<V> {
 
-    int getId();
-    List<Integer> getVertexes();
+    V getCore();
+    List<V> getVertexes();
 
 }

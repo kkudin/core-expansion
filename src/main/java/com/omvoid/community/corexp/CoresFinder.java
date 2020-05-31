@@ -4,10 +4,10 @@ package com.omvoid.community.corexp;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 class CoresFinder {
     /**
@@ -20,7 +20,7 @@ class CoresFinder {
      *
      * @param graph
      */
-    public IntObjectHashMap<IntHashSet> find(ExtendedGraph graph) {
+    public <V, E> IntObjectHashMap<IntHashSet> find(ExtendedGraph<V, E> graph) {
         Set<Integer> vertices = graph.getFastutilGraph().vertexSet();
         IntHashSet visited = new IntHashSet(vertices.size());
         IntObjectHashMap<IntHashSet> cores = new IntObjectHashMap<>();
@@ -34,7 +34,7 @@ class CoresFinder {
     private void applyAdditionalCores(
             int v, IntDoubleHashMap vertexWeights,
             IntHashSet visited, IntObjectHashMap<IntHashSet> cores,
-            FastutilMapIntVertexGraph g) {
+            FastutilMapIntVertexGraph<DefaultWeightedEdge> g) {
         double vW = vertexWeights.get(v);
         Set<Integer> nn = NeighbourhoodFinder.find(g, v);
         IntHashSet coreVertices = new IntHashSet();

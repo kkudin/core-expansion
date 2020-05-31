@@ -1,15 +1,10 @@
 package com.omvoid.community.corexp;
 
 import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
-import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
-import java.util.List;
 import java.util.Set;
 
 class ClosesVertexFinder {
@@ -30,8 +25,8 @@ class ClosesVertexFinder {
      * @param v
      * @param extendedGraph
      */
-    int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph extendedGraph) {
-        FastutilMapIntVertexGraph<DefaultWeightedEdge> g = extendedGraph.getFastutilGraph();
+    <V, E> int find(IntObjectHashMap<IntHashSet> cores, Integer v, ExtendedGraph<V, E> extendedGraph) {
+        var g = extendedGraph.getFastutilGraph();
 
         Set<Integer> nn = NeighbourhoodFinder.find(g, v);
         IntDoubleHashMap candidates = new IntDoubleHashMap(nn.size());
@@ -62,9 +57,7 @@ class ClosesVertexFinder {
                 maxWeight = candidate.getTwo();
                 closestCore = candidate.getOne();
                 cnt = 1;
-            }
-
-            if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
+            } else if (Double.compare(candidate.getTwo(), maxWeight) == 0) {
                 cnt++;
             }
         }

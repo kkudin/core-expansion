@@ -2,23 +2,23 @@ package com.omvoid.community;
 
 import java.util.List;
 
-public class DefaultCommunity implements Community {
+public class  DefaultCommunity<V> implements Community<V> {
 
-    private final int id;
-    private final List<Integer> vertexes;
+    private final V core;
+    private final List<V> vertexes;
 
-    public DefaultCommunity(int id, List<Integer> vertexes) {
-        this.id = id;
+    public DefaultCommunity(V core, List<V> vertexes) {
+        this.core = core;
         this.vertexes = vertexes;
     }
 
     @Override
-    public int getId() {
-        return id;
+    public V getCore() {
+        return core;
     }
 
     @Override
-    public List<Integer> getVertexes() {
+    public List<V> getVertexes() {
         return vertexes;
     }
 }
