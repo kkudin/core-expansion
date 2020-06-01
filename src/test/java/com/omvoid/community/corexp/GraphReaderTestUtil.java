@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +16,12 @@ public class GraphReaderTestUtil {
 
     @Test
     public void GraphReaderTestUtilTest() throws IOException {
-        readCsvGraph("/graph.csv");
+        readCsvGraph(GraphReaderTestUtil.class.getResourceAsStream("/Email-Enron.csv"));
     }
 
-    public static Graph<Integer, DefaultWeightedEdge> readCsvGraph(String resourceName) throws IOException {
+    public static Graph<Integer, DefaultWeightedEdge> readCsvGraph(InputStream inputStream) throws IOException {
         Graph<Integer, DefaultWeightedEdge> result = new DefaultUndirectedGraph<>(DefaultWeightedEdge.class);
-        var CVSStream = GraphReaderTestUtil.class.getResourceAsStream(resourceName);
-        var reader = new BufferedReader(new InputStreamReader(CVSStream));
+        var reader = new BufferedReader(new InputStreamReader(inputStream));
         while(reader.ready()) {
             var vertexes = List.of(reader.readLine().split(",")).stream().map(Integer::parseInt).collect(Collectors.toList());
             if(vertexes.size() != 2) {
