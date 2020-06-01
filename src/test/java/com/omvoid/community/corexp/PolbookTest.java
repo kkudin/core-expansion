@@ -2,6 +2,10 @@ package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.RepeatedTest;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,5 +43,7 @@ class PolbookTest {
             assertThat(result.get(0).getVertexes()).containsAll(expectedCommunity2);
             assertThat(result.get(1).getVertexes()).containsAll(expectedCommunity1);
         }
+
     }
+
 }
