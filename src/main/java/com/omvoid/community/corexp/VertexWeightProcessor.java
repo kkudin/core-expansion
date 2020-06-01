@@ -21,7 +21,7 @@ class VertexWeightProcessor {
         final FastutilMapIntVertexGraph<DefaultWeightedEdge> graph = extendedGraph.getFastutilGraph();
         final var vertexMap = extendedGraph.getVertexWeights();
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
 
         graph.vertexSet().forEach(v -> pool.submit(new calculateWeightTask(v, graph, vertexMap)));
 
@@ -45,7 +45,12 @@ class VertexWeightProcessor {
 
         @Override
         public void run() {
-            vertexMap.put(v, graph.edgesOf(v).stream().mapToDouble(graph::getEdgeWeight).sum());
+            double w = .0;
+            for (DefaultWeightedEdge e : graph.edgesOf(v)) {
+                w += graph.getEdgeWeight(e);
+            }
+
+            vertexMap.put(v, w);
         }
     }
 }

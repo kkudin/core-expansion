@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
@@ -46,10 +47,10 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
                 .filter(l -> l.size() > 0)
                 .forEach(unclassifiedVertexes::removeAll);
 
-        final int[] foundVertexes = new int[1];
+        final AtomicInteger foundVertexes = new AtomicInteger(0);
 
         while (true) {
-            foundVertexes[0] = 0;
+            foundVertexes.set(0);
             closesVertexFinder.findAll(
                     vertexCommMapping, extendedGraph, unclassifiedVertexes
             ).forEachKeyValue(
@@ -58,12 +59,12 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
                             unclassifiedVertexes.remove(k);
                             communityMap.get(v).add(k);
                             vertexCommMapping.put(k, v);
-                            foundVertexes[0]++;
+                            foundVertexes.incrementAndGet();
                         }
                     }
             );
 
-            if(foundVertexes[0] == 0) {
+            if(foundVertexes.get() == 0) {
                 break;
             }
         }

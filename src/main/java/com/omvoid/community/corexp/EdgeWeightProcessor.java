@@ -19,7 +19,7 @@ class EdgeWeightProcessor {
     public <V,E> void calculateWeight(ExtendedGraph<V,E> extendedGraph) throws InterruptedException {
         final var graph = extendedGraph.getFastutilGraph();
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
 
         graph.edgeSet().forEach(e -> pool.submit(new processEdgeTask(graph, e)));
 

@@ -1,9 +1,6 @@
 package com.omvoid.community.corexp;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.Getter;
-import org.eclipse.collections.api.map.primitive.IntDoubleMap;
-import org.eclipse.collections.api.map.primitive.ObjectIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.jgrapht.Graph;
@@ -19,12 +16,13 @@ class ExtendedGraph<V,E> {
 
     private final Graph<V,E> graph;
 
-    private final IntDoubleHashMap vertexWeights = new IntDoubleHashMap();
+    private final IntDoubleHashMap vertexWeights;
     private final ObjectIntHashMap<V> mappedVertex = new ObjectIntHashMap<V>();
     private final FastutilMapIntVertexGraph<DefaultWeightedEdge> fastutilGraph;
 
     public ExtendedGraph(Graph<V,E> graph) {
         this.graph = graph;
+        vertexWeights = new IntDoubleHashMap(graph.vertexSet().size());
 
         //Initializing mappedVertex and vertexWeights
         AtomicInteger increment = new AtomicInteger();

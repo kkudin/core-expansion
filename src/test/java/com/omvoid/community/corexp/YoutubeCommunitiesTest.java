@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 class YoutubeCommunitiesTest {
 
@@ -15,11 +16,10 @@ class YoutubeCommunitiesTest {
         var graph = GraphReaderTestUtil.readCsvGraph(this.getClass().getResourceAsStream("/com-youtube.ungraph.txt"));
 
 
-        System.out.println(LocalTime.now());
+        var now = LocalTime.now();
         var result = ca.computeCommunities(graph);
-        System.out.println(LocalTime.now());
+        System.out.printf("Done in %d seconds\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
         assert result != null;
-        System.out.println(result.size());
+        System.out.printf("Found %d communities.", result.size());
     }
-
 }

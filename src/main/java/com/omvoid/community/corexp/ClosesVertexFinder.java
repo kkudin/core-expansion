@@ -36,7 +36,7 @@ class ClosesVertexFinder {
         FastutilMapIntVertexGraph<DefaultWeightedEdge> g = extendedGraph.getFastutilGraph();
         IntIntHashMap results = new IntIntHashMap(unclassifiedVertexes.size());
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
 
         unclassifiedVertexes.forEach(
                 v -> pool.submit(new findCoreTask(cores, v, g, results))

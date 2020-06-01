@@ -1,18 +1,18 @@
 package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
-import static org.assertj.core.api.Assertions.*;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class PolbookTest {
 
-    @Test
+    @RepeatedTest(1000)
     public void createTest() throws IOException, InterruptedException {
 
         var expectedCommunity1 = List.of(
@@ -39,7 +39,5 @@ class PolbookTest {
             assertThat(result.get(0).getVertexes()).containsAll(expectedCommunity2);
             assertThat(result.get(1).getVertexes()).containsAll(expectedCommunity1);
         }
-
     }
-
 }
