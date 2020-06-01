@@ -1,6 +1,7 @@
 package com.omvoid.community.corexp;
 
 
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -41,7 +42,7 @@ class CoresFinder {
             return;
         }
 
-        Set<Integer> nn = NeighbourhoodFinder.find(g, v);
+        IntHashSet nn = NeighbourhoodFinder.find(g, v);
         IntHashSet coreVertices = new IntHashSet();
         coreVertices.add(v);
 
@@ -53,7 +54,12 @@ class CoresFinder {
 
         IntHashSet equalsWeightsNodes = new IntHashSet();
 
-        for (int n : nn) {
+        IntIterator iter = nn.intIterator();
+        int n;
+
+        while (iter.hasNext())
+        {
+            n = iter.next();
             if (vertexWeights.get(n) > vW) {
                 visited.add(v);
                 return;
