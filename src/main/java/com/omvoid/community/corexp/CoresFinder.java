@@ -36,6 +36,11 @@ class CoresFinder {
             IntHashSet visited, IntObjectHashMap<IntHashSet> cores,
             FastutilMapIntVertexGraph<DefaultWeightedEdge> g) {
         double vW = vertexWeights.get(v);
+
+        if (Double.compare(vW, .0) == 0) {
+            return;
+        }
+
         Set<Integer> nn = NeighbourhoodFinder.find(g, v);
         IntHashSet coreVertices = new IntHashSet();
         coreVertices.add(v);
