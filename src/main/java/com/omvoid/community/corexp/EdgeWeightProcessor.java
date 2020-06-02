@@ -1,9 +1,11 @@
 package com.omvoid.community.corexp;
 
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -20,8 +22,10 @@ class EdgeWeightProcessor {
         final var graph = extendedGraph.getFastutilGraph();
 
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
+        Map<Integer, IntHashSet> cache = new ConcurrentHashMap<>(graph.vertexSet().size());
+        int bigNNThreshold = (int) (graph.vertexSet().size() * 0.1);
 
-        graph.edgeSet().forEach(e -> pool.submit(new processEdgeTask(graph, e)));
+        graph.edgeSet().forEach(e -> pool.submit(new processEdgeTask(graph, e, cache, bigNNThreshold)));
 
         pool.shutdown();
         pool.awaitTermination(15L, TimeUnit.MINUTES);
@@ -30,10 +34,19 @@ class EdgeWeightProcessor {
     static class processEdgeTask implements Runnable {
         private final FastutilMapIntVertexGraph<DefaultWeightedEdge> graph;
         private final DefaultWeightedEdge e;
+        private final Map<Integer, IntHashSet> cache;
+        private final int bigNNThreshold;
 
-        public processEdgeTask(FastutilMapIntVertexGraph<DefaultWeightedEdge> graph, DefaultWeightedEdge e) {
+        public processEdgeTask(
+                FastutilMapIntVertexGraph<DefaultWeightedEdge> graph,
+                DefaultWeightedEdge e,
+                Map<Integer, IntHashSet> cache,
+                int bigNNThreshold
+        ) {
             this.graph = graph;
             this.e = e;
+            this.cache = cache;
+            this.bigNNThreshold = bigNNThreshold;
         }
 
         @Override
@@ -41,13 +54,39 @@ class EdgeWeightProcessor {
             int src = graph.getEdgeSource(e);
             int dst = graph.getEdgeTarget(e);
 
-            Set<Integer> srcNN = NeighbourhoodFinder.find(graph, src);
-            Set<Integer> dstNN = NeighbourhoodFinder.find(graph, dst);
+            IntHashSet srcNN, dstNN;
 
-            double w = (srcNN.stream().filter(dstNN::contains).count() * 1.0);
-            srcNN.addAll(dstNN);
-            if (srcNN.size() > 2) {
-                w /= (srcNN.size() - 2);
+            if (cache.containsKey(src)) {
+                srcNN = cache.get(src);
+            } else {
+                srcNN = NeighbourhoodFinder.find(graph, src);
+                if (srcNN.size() >= bigNNThreshold) {
+                    cache.put(src, srcNN);
+                }
+            }
+
+            if (cache.containsKey(dst)) {
+                dstNN = cache.get(dst);
+            } else {
+                dstNN = NeighbourhoodFinder.find(graph, dst);
+                if (dstNN.size() >= bigNNThreshold) {
+                    cache.put(dst, dstNN);
+                }
+            }
+
+            double w = (srcNN.count(dstNN::contains) * 1.0);
+
+            IntHashSet union;
+            if (srcNN.size() > dstNN.size()) {
+                union = new IntHashSet(srcNN);
+                union.addAll(dstNN);
+            } else {
+                union = new IntHashSet(dstNN);
+                union.addAll(srcNN);
+            }
+
+            if (union.size() > 2) {
+                w /= (union.size() - 2);
             } else {
                 w = 0.0;
             }

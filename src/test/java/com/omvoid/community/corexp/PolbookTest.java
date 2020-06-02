@@ -2,10 +2,6 @@ package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.RepeatedTest;
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PolbookTest {
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     public void createTest() throws IOException, InterruptedException {
 
         var expectedCommunity1 = List.of(
