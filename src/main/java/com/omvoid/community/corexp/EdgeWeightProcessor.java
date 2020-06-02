@@ -1,12 +1,9 @@
 package com.omvoid.community.corexp;
 
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -64,9 +61,7 @@ class EdgeWeightProcessor {
             } else {
                 srcNN = NeighbourhoodFinder.find(graph, src);
                 if (srcNN.size() >= bigNNThreshold) {
-                    synchronized (cache) {
-                        cache.put(src, srcNN);
-                    }
+                    cache.put(src, srcNN);
                 }
             }
 
@@ -75,19 +70,23 @@ class EdgeWeightProcessor {
             } else {
                 dstNN = NeighbourhoodFinder.find(graph, dst);
                 if (dstNN.size() >= bigNNThreshold) {
-                    synchronized (cache) {
-                        cache.put(dst, dstNN);
-                    }
+                    cache.put(dst, dstNN);
                 }
             }
 
             double w = (srcNN.count(dstNN::contains) * 1.0);
-            srcNN.addAll(dstNN);
 
-            int unionSize = srcNN.size();
+            IntHashSet union;
+            if (srcNN.size() > dstNN.size()) {
+                union = new IntHashSet(srcNN);
+                union.addAll(dstNN);
+            } else {
+                union = new IntHashSet(dstNN);
+                union.addAll(srcNN);
+            }
 
-            if (unionSize > 2) {
-                w /= (unionSize - 2);
+            if (union.size() > 2) {
+                w /= (union.size() - 2);
             } else {
                 w = 0.0;
             }

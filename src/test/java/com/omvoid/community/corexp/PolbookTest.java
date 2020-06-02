@@ -2,10 +2,6 @@ package com.omvoid.community.corexp;
 
 import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.RepeatedTest;
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
