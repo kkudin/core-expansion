@@ -23,7 +23,7 @@ class EdgeWeightProcessor {
 
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
         Map<Integer, IntHashSet> cache = new ConcurrentHashMap<>(graph.vertexSet().size());
-        int bigNNThreshold = (int) (graph.vertexSet().size() * 0.15);
+        int bigNNThreshold = (int) (graph.vertexSet().size() * 0.1);
 
         graph.edgeSet().forEach(e -> pool.submit(new processEdgeTask(graph, e, cache, bigNNThreshold)));
 

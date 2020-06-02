@@ -7,9 +7,10 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.Graph;
 
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
@@ -24,10 +25,7 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
         var extendedGraph = new ExtendedGraph<>(graph);
 
-        LocalTime now = LocalTime.now();
-        System.out.println("Start edgeWeightProcessor.calculateWeight(extendedGraph)");
         edgeWeightProcessor.calculateWeight(extendedGraph);
-        System.out.printf("Done in %d seconds.\n", now.until(LocalTime.now(), ChronoUnit.MINUTES));
         vertexWeightProcessor.calculateWeight(extendedGraph);
 
         var communityMap = coresFinder.find(extendedGraph);
