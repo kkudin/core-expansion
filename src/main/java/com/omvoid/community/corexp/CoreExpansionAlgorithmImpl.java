@@ -77,7 +77,7 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
             Set<V> vertexes = new HashSet<>();
             Set<V> cores = new HashSet<>();
             v.forEach(cv -> vertexes.add(reversed.get(cv)));
-            v.forEach(cv -> cores.add(reversed.get(cv)));
+            coreVertexes.get(k).forEach(cv -> cores.add(reversed.get(cv)));
             communities.put(reversed.get(k), vertexes);
             newCores.put(reversed.get(k), cores);
         });
