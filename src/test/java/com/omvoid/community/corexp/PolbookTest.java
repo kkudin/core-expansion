@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PolbookTest {
 
-    @RepeatedTest(100)
+    @RepeatedTest(1000)
     public void createTest() throws IOException, InterruptedException {
 
         var expectedCommunity1 = List.of(

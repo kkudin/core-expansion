@@ -4,6 +4,7 @@ import com.omvoid.community.Community;
 import com.omvoid.community.CommunityAlgorithm;
 import com.omvoid.community.DefaultCommunity;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.Graph;
 
@@ -29,6 +30,7 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
         vertexWeightProcessor.calculateWeight(extendedGraph);
 
         var communityMap = coresFinder.find(extendedGraph);
+        var coreVertexes = new IntObjectHashMap<>(communityMap);
 
         IntHashSet unclassifiedVertexes = new IntHashSet();
         IntIntHashMap vertexCommMapping = new IntIntHashMap(graph.vertexSet().size());
@@ -47,9 +49,9 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
                 .filter(l -> l.size() > 0)
                 .forEach(unclassifiedVertexes::removeAll);
 
-        final AtomicInteger foundVertexes = new AtomicInteger(0);
+        final AtomicInteger foundVertexes = new AtomicInteger(1);
 
-        while (true) {
+        while (foundVertexes.get() > 0) {
             foundVertexes.set(0);
             closesVertexFinder.findAll(
                     vertexCommMapping, extendedGraph, unclassifiedVertexes
