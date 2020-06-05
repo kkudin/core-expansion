@@ -22,6 +22,8 @@ public class GraphReader {
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(arguments.getCommentStartWith())) continue;
                 Pair<Integer, Integer> vertexPair = getVertexPair(line, arguments.getDelimiter());
+                graph.addVertex(vertexPair.getKey());//что тут происходит?
+                graph.addVertex(vertexPair.getValue());
                 graph.addEdge(vertexPair.getKey(), vertexPair.getValue());
             }
         } catch (IOException e) {
