@@ -24,14 +24,14 @@ class YoutubeCommunitiesTest {
         var result = ca.computeCommunities(graph);
         System.out.printf("Done in %d seconds\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
         assert result != null;
-        System.out.printf("Found %d communities.\n", result.size());
+        System.out.printf("Found %d communities.\n", result.getCommunities().size());
 
         TreeMap<Integer, Integer> commSizes = new TreeMap<>(
                 Comparator.comparing(k -> -k)
         );
 
-        result.forEach(comm -> {
-            int size = comm.getVertexes().size();
+        result.getCommunities().values().forEach(comm -> {
+            int size = comm.size();
             commSizes.put(
                     size,
                     commSizes.getOrDefault(size, 0) + 1
@@ -39,7 +39,7 @@ class YoutubeCommunitiesTest {
         });
 
         Iterator<Map.Entry<Integer, Integer>> iter = commSizes.entrySet().iterator();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             if (iter.hasNext()) {
                 Map.Entry<Integer, Integer> e = iter.next();
                 System.out.printf("Number of communities of size %d : %d\n", e.getKey(), e.getValue());

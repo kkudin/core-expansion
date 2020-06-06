@@ -2,10 +2,8 @@ package com.omvoid.community;
 
 import org.jgrapht.Graph;
 
-import java.util.List;
-
 public interface CommunityAlgorithm {
 
-    <V,E> List<Community<V>> computeCommunities(Graph<V,E> graph) throws InterruptedException;
+    <V,E> CoreExpansionResults<V> computeCommunities(Graph<V,E> graph) throws InterruptedException;
 
 }
