@@ -2,7 +2,7 @@ package com.omvoid.community.utils;
 
 import com.omvoid.community.models.CmdArguments;
 import com.omvoid.community.exception.GraphReaderException;
-import javafx.util.Pair;
+import com.omvoid.community.models.VertexPair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -21,10 +21,17 @@ public class GraphReader {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(cmdArguments.getCommentStartWith())) continue;
-                Pair<Integer, Integer> vertexPair = getVertexPair(line, cmdArguments.getDelimiter());
-                graph.addVertex(vertexPair.getKey());
-                graph.addVertex(vertexPair.getValue());
-                graph.addEdge(vertexPair.getKey(), vertexPair.getValue());
+                VertexPair vertexPair = getVertexPair(line, cmdArguments.getDelimiter());
+
+                if (!graph.containsVertex(vertexPair.getFirstVertex())) {
+                    graph.addVertex(vertexPair.getFirstVertex());
+                }
+
+                if (!graph.containsVertex(vertexPair.getSecondVertex())) {
+                    graph.addVertex(vertexPair.getSecondVertex());
+                }
+
+                graph.addEdge(vertexPair.getFirstVertex(), vertexPair.getSecondVertex());
             }
         } catch (IOException e) {
             throw new GraphReaderException(e);
@@ -40,24 +47,23 @@ public class GraphReader {
         }
     }
 
-    private Pair<Integer, Integer> getVertexPair(String line, String delimiter) throws GraphReaderException {
+    private VertexPair getVertexPair(String line, String delimiter) throws GraphReaderException {
         String[] rawVertex = line.split(delimiter);
 
-        if (rawVertex.length != 2) throw new GraphReaderException("Line " + line + " has vertex size not equals 2");
+        if (rawVertex.length < 2) throw new GraphReaderException("Line " + line + " has less then 2 vertex");
 
-        Integer firstVertex;
-        Integer secondVertex;
+        VertexPair vertexPair = new VertexPair();
 
         try {
-            firstVertex = Integer.parseInt(rawVertex[0]);
-            secondVertex = Integer.parseInt(rawVertex[1]);
+            vertexPair.setFirstVertex(Integer.parseInt(rawVertex[0]));
+            vertexPair.setSecondVertex(Integer.parseInt(rawVertex[1]));
         } catch (NumberFormatException e) {
             throw new GraphReaderException("Line " + line + " can't parse vertex pair");
         }
 
-        if (firstVertex.equals(secondVertex))
+        if (vertexPair.getFirstVertex().equals(vertexPair.getSecondVertex()))
             throw new GraphReaderException("Line " + line + " this algorithm does not support loop");
 
-        return new Pair<>(firstVertex, secondVertex);
+        return vertexPair;
     }
 }

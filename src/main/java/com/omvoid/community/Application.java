@@ -2,28 +2,60 @@ package com.omvoid.community;
 
 import com.omvoid.community.corexp.CoreExpansionAlgorithmImpl;
 import com.omvoid.community.exception.GraphReaderException;
+import com.omvoid.community.exception.JsonWriterException;
 import com.omvoid.community.models.CmdArguments;
+import com.omvoid.community.models.DefaultCoreExpansionResults;
 import com.omvoid.community.utils.CommandLineArgumentExtractor;
 import com.omvoid.community.utils.GraphReader;
+import com.omvoid.community.utils.JsonResultWriter;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class Application {
 
-    public static void main(String[] args) throws ParseException, GraphReaderException, InterruptedException {
-        CmdArguments cmdArguments = new CommandLineArgumentExtractor().extractArguments(args);
+    public static void main(String[] args) {
+        try {
+            CmdArguments cmdArguments = new CommandLineArgumentExtractor().extractArguments(args);
 
-        GraphReader reader = new GraphReader();
-        var graph = reader.readGraph(cmdArguments);
+            System.out.println(cmdArguments);
 
-        CoreExpansionAlgorithmImpl coreExpansionAlgorithm = new CoreExpansionAlgorithmImpl();
-        var communities = coreExpansionAlgorithm.computeCommunities(graph);
+            GraphReader reader = new GraphReader();
+            var graph = reader.readGraph(cmdArguments);
 
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        System.out.println(cmdArguments);
+            System.out.println("Graph read success");
+
+            System.out.println("Computing communities... This may take several minutes");
+
+            long time = System.nanoTime();
+
+            CoreExpansionAlgorithmImpl coreExpansionAlgorithm = new CoreExpansionAlgorithmImpl();
+            var results = coreExpansionAlgorithm.computeCommunities(graph);
+
+            time = System.nanoTime() - time;
+
+            System.out.println("Computing communities success. It take " + TimeUnit.SECONDS.convert(time, TimeUnit.NANOSECONDS) + " seconds");
+
+            JsonResultWriter jsonResultWriter = new JsonResultWriter();
+            jsonResultWriter.writeResult((DefaultCoreExpansionResults) results, cmdArguments.getOutputDirectory());
+
+            System.out.println("Result was written to the " + cmdArguments.getOutputDirectory() + " directory");
+        } catch (JsonWriterException e) {
+            System.out.println("Error while write result to file. Aborting...");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            System.out.println("Error while computing communities. Aborting...");
+            e.printStackTrace();
+        } catch (ParseException e) {
+            System.out.println("Error while parsing command line options. Aborting...");
+            e.printStackTrace();
+        } catch (GraphReaderException e) {
+            System.out.println("Error while read graph. Aborting...");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Got unexpected exception. Aborting...");
+            e.printStackTrace();
+        }
+
     }
 }

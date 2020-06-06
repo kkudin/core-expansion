@@ -1,6 +1,6 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.models.Community;
+import com.omvoid.community.models.CoreExpansionResults;
 import org.jgrapht.Graph;
 
 public interface CommunityAlgorithm {

@@ -1,4 +1,4 @@
-package com.omvoid.community;
+package com.omvoid.community.models;
 
 import java.util.Map;
 import java.util.Optional;
