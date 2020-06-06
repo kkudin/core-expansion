@@ -23,30 +23,6 @@ public class Application {
         CoreExpansionAlgorithmImpl coreExpansionAlgorithm = new CoreExpansionAlgorithmImpl();
         var communities = coreExpansionAlgorithm.computeCommunities(graph);
 
-        ////
-        TreeMap<Integer, Integer> commSizes = new TreeMap<>(
-                Comparator.comparing(k -> -k)
-        );
-
-        communities.forEach(comm -> {
-            int size = comm.getVertexes().size();
-            commSizes.put(
-                    size,
-                    commSizes.getOrDefault(size, 0) + 1
-            );
-        });
-
-        Iterator<Map.Entry<Integer, Integer>> iter = commSizes.entrySet().iterator();
-        for (int i = 0; i < 1000; i++) {
-            if (iter.hasNext()) {
-                Map.Entry<Integer, Integer> e = iter.next();
-                System.out.printf("Number of communities of size %d : %d\n", e.getKey(), e.getValue());
-            } else {
-                break;
-            }
-        }
-        ////
-
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         System.out.println(cmdArguments);
     }
