@@ -1,5 +1,6 @@
-package com.omvoid.community;
+package com.omvoid.community.corexp;
 
+import com.omvoid.community.models.Community;
 import org.jgrapht.Graph;
 
 import java.util.List;

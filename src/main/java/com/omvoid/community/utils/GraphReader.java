@@ -1,6 +1,6 @@
 package com.omvoid.community.utils;
 
-import com.omvoid.community.Arguments;
+import com.omvoid.community.models.CmdArguments;
 import com.omvoid.community.exception.GraphReaderException;
 import javafx.util.Pair;
 import org.jgrapht.Graph;
@@ -11,18 +11,18 @@ import java.io.*;
 
 public class GraphReader {
 
-    public Graph<Integer, DefaultWeightedEdge> readGraph(Arguments arguments) throws GraphReaderException {
+    public Graph<Integer, DefaultWeightedEdge> readGraph(CmdArguments cmdArguments) throws GraphReaderException {
 
         Graph<Integer, DefaultWeightedEdge> graph = new DefaultUndirectedGraph<>(DefaultWeightedEdge.class);
 
-        BufferedReader reader = new BufferedReader(getFileReader(arguments));
+        BufferedReader reader = new BufferedReader(getFileReader(cmdArguments));
 
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith(arguments.getCommentStartWith())) continue;
-                Pair<Integer, Integer> vertexPair = getVertexPair(line, arguments.getDelimiter());
-                graph.addVertex(vertexPair.getKey());//что тут происходит?
+                if (line.startsWith(cmdArguments.getCommentStartWith())) continue;
+                Pair<Integer, Integer> vertexPair = getVertexPair(line, cmdArguments.getDelimiter());
+                graph.addVertex(vertexPair.getKey());
                 graph.addVertex(vertexPair.getValue());
                 graph.addEdge(vertexPair.getKey(), vertexPair.getValue());
             }
@@ -32,9 +32,9 @@ public class GraphReader {
         return graph;
     }
 
-    private FileReader getFileReader(Arguments arguments) throws GraphReaderException {
+    private FileReader getFileReader(CmdArguments cmdArguments) throws GraphReaderException {
         try {
-            return new FileReader(arguments.getInputFile());
+            return new FileReader(cmdArguments.getInputFile());
         } catch (FileNotFoundException e) {
             throw new GraphReaderException(e);
         }

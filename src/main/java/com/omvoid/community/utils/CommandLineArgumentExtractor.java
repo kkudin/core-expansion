@@ -1,32 +1,32 @@
 package com.omvoid.community.utils;
 
-import com.omvoid.community.Arguments;
+import com.omvoid.community.models.CmdArguments;
 import org.apache.commons.cli.*;
 
 public class CommandLineArgumentExtractor {
 
-    public Arguments extractArguments(String[] args) throws ParseException {
-        Arguments arguments = new Arguments();
+    public CmdArguments extractArguments(String[] args) throws ParseException {
+        CmdArguments cmdArguments = new CmdArguments();
 
         CommandLine cmd = parseArgs(args);
 
         if (cmd.hasOption("i")) {
-            arguments.setInputFile(cmd.getOptionValue("i"));
+            cmdArguments.setInputFile(cmd.getOptionValue("i"));
         }
 
         if (cmd.hasOption("d")) {
-            arguments.setDelimiter(cmd.getOptionValue("d"));
+            cmdArguments.setDelimiter(cmd.getOptionValue("d"));
         }
 
         if (cmd.hasOption("c")) {
-            arguments.setCommentStartWith(cmd.getOptionValue("c"));
+            cmdArguments.setCommentStartWith(cmd.getOptionValue("c"));
         }
 
         if (cmd.hasOption("r")) {
-            arguments.setOutputDirectory(cmd.getOptionValue("r"));
+            cmdArguments.setOutputDirectory(cmd.getOptionValue("r"));
         }
 
-        return arguments;
+        return cmdArguments;
     }
 
     private Options buildOptions() {

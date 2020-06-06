@@ -1,8 +1,7 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.Community;
-import com.omvoid.community.CommunityAlgorithm;
-import com.omvoid.community.DefaultCommunity;
+import com.omvoid.community.models.Community;
+import com.omvoid.community.models.DefaultCommunity;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;

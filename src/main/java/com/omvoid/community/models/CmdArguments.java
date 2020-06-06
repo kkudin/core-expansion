@@ -1,9 +1,9 @@
-package com.omvoid.community;
+package com.omvoid.community.models;
 
 import lombok.Data;
 
 @Data
-public class Arguments {
+public class CmdArguments {
     private String inputFile = "input.txt";
     private String delimiter = ",";
     private String commentStartWith = "#";

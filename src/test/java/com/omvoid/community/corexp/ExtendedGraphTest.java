@@ -1,6 +1,5 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
