@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 class ExtendedGraphTest {
 
@@ -16,8 +17,8 @@ class ExtendedGraphTest {
 
         var result = ca.computeCommunities(graph);
         assert result != null;
-        Assertions.assertEquals(result.size(), 2);
-        List<Integer> comm1 = result.get(0).getVertexes();
+        Assertions.assertEquals(result.getCommunities().size(), 2);
+        Set<Integer> comm1 = result.getCommunities().values().iterator().next();
         if (comm1.size() == 6) {
             for (int expected : List.of(1, 2, 3, 4, 5, 11)) {
                 assert comm1.contains(expected);

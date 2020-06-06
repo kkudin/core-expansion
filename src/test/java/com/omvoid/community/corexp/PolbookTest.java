@@ -30,15 +30,19 @@ class PolbookTest {
 
         var result = ca.computeCommunities(graph);
         assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-        if(result.get(0).getVertexes().contains(0)) {
-            assertThat(result.get(0).getVertexes()).containsAll(expectedCommunity1);
-            assertThat(result.get(1).getVertexes()).containsAll(expectedCommunity2);
-        } else {
-            assertThat(result.get(0).getVertexes()).containsAll(expectedCommunity2);
-            assertThat(result.get(1).getVertexes()).containsAll(expectedCommunity1);
-        }
+        assertThat(result.getCommunities().size()).isEqualTo(2);
+        var iter = result.getCommunities().values().iterator();
+        var comm1 = iter.next();
+        var comm2 = iter.next();
 
+
+        if(comm1.contains(0)) {
+            assertThat(comm1.containsAll(expectedCommunity1));
+            assertThat(comm2.containsAll(expectedCommunity2));
+        } else {
+            assertThat(comm1.containsAll(expectedCommunity2));
+            assertThat(comm2.containsAll(expectedCommunity1));
+        }
     }
 
 }

@@ -1,16 +1,12 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.models.Community;
-import com.omvoid.community.models.DefaultCommunity;
+import com.omvoid.community.*;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.Graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
@@ -21,7 +17,7 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
     private final ClosesVertexFinder closesVertexFinder = new ClosesVertexFinder();
 
 
-    public <V,E> List<Community<V>> computeCommunities(Graph<V,E> graph) throws InterruptedException {
+    public <V,E> CoreExpansionResults<V> computeCommunities(Graph<V,E> graph) throws InterruptedException {
 
         var extendedGraph = new ExtendedGraph<>(graph);
 
@@ -70,19 +66,27 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
             }
         }
 
-
         Map<Integer,V> reversed = new HashMap<>();
         extendedGraph.getMappedVertex().forEachKeyValue( (k,v) -> {
             reversed.put(v, k);
         });
 
-        var result = new ArrayList<Community<V>>();
+        var communities = new HashMap<V, Set<V>>();
+        var newCores = new HashMap<V, Set<V>>();
         communityMap.forEachKeyValue((k, v) -> {
-            List<V> vertexes = new ArrayList<>();
+            Set<V> vertexes = new HashSet<>();
+            Set<V> cores = new HashSet<>();
             v.forEach(cv -> vertexes.add(reversed.get(cv)));
-            result.add(new DefaultCommunity<>(reversed.get(k), vertexes));
+            coreVertexes.get(k).forEach(cv -> cores.add(reversed.get(cv)));
+            communities.put(reversed.get(k), vertexes);
+            newCores.put(reversed.get(k), cores);
         });
 
-        return result;
+        var vCommMapping = new HashMap<V, V>();
+        vertexCommMapping.forEachKeyValue((k, v) -> vCommMapping.put(reversed.get(k), reversed.get(v)));
+
+        return new DefaultCoreExpansionResults<>(
+                communities, vCommMapping, newCores
+        );
     }
 }
