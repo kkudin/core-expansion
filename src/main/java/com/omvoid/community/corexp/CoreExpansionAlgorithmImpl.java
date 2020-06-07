@@ -6,6 +6,8 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.jgrapht.Graph;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,35 +20,59 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
 
     public <V,E> CoreExpansionResults<V> computeCommunities(Graph<V,E> graph) throws InterruptedException {
-
+        System.out.println("Start main algorithm.");
         var extendedGraph = new ExtendedGraph<>(graph);
+        System.out.printf(
+                "Input graph has %d edges and %d vertices. Converting to weighted graph done.\n",
+                extendedGraph.getFastutilGraph().vertexSet().size(),
+                extendedGraph.getFastutilGraph().edgeSet().size()
+        );
 
+        LocalTime now;
+
+        System.out.println("Start edge weights processing...");
+        now = LocalTime.now();
         edgeWeightProcessor.calculateWeight(extendedGraph);
+        System.out.printf("Done in %d seconds.\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
+
+        System.out.println("Start vertex weights processing...");
+        now = LocalTime.now();
         vertexWeightProcessor.calculateWeight(extendedGraph);
+        System.out.printf("Done in %d seconds.\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
 
+        System.out.println("Looking for cores...");
+        now = LocalTime.now();
         var communityMap = coresFinder.find(extendedGraph);
-        var coreVertexes = new IntObjectHashMap<>(communityMap);
+        System.out.printf(
+                "Done in %d seconds. Found %d cores.\n",
+                now.until(LocalTime.now(), ChronoUnit.SECONDS),
+                communityMap.keySet().size()
+        );
 
-        IntHashSet unclassifiedVertexes = new IntHashSet();
+        var coreVertexes = new IntObjectHashMap<IntHashSet>(communityMap.size());
+        IntHashSet unclassifiedVertexes = new IntHashSet(graph.vertexSet().size());
         IntIntHashMap vertexCommMapping = new IntIntHashMap(graph.vertexSet().size());
 
-        extendedGraph.getMappedVertex().values().forEach( v -> {
-            if(!communityMap.containsKey(v)) {
-                unclassifiedVertexes.add(v);
-                vertexCommMapping.put(v, -1);
-            } else {
-                vertexCommMapping.put(v, v);
-            }
+        communityMap.forEachKeyValue((k, v) -> {
+            coreVertexes.put(k, new IntHashSet(v));
+            v.forEach(cv -> vertexCommMapping.put(cv, k));
         });
 
-        communityMap.values()
-                .stream()
-                .filter(l -> l.size() > 0)
-                .forEach(unclassifiedVertexes::removeAll);
+        extendedGraph.getMappedVertex().values().forEach( v -> {
+            if(!vertexCommMapping.containsKey(v)) {
+                vertexCommMapping.put(v, -1);
+                unclassifiedVertexes.add(v);
+            }
+        });
 
         final AtomicInteger foundVertexes = new AtomicInteger(1);
 
         while (foundVertexes.get() > 0) {
+            now = LocalTime.now();
+            System.out.printf(
+                    "Start an iteration. There are %d unclassified vertexes yet.\n",
+                    unclassifiedVertexes.size()
+            );
             foundVertexes.set(0);
             closesVertexFinder.findAll(
                     vertexCommMapping, extendedGraph, unclassifiedVertexes
@@ -61,10 +87,13 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
                     }
             );
 
-            if(foundVertexes.get() == 0) {
-                break;
-            }
+            System.out.printf("Done an iteration in %d seconds.\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
         }
+
+        System.out.printf(
+                "The algorithm finished. %d vertex hadn't been classified.\n",
+                unclassifiedVertexes.size()
+        );
 
         Map<Integer,V> reversed = new HashMap<>();
         extendedGraph.getMappedVertex().forEachKeyValue( (k,v) -> {
