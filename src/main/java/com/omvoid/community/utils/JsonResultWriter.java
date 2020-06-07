@@ -24,6 +24,7 @@ public class JsonResultWriter implements ResultWriter {
     private void writeAsJson(Object result, String path) throws JsonWriterException {
         ObjectMapper mapper = new ObjectMapper();
         try {
+            new File(path).getParentFile().mkdirs();
             mapper.writeValue(new FileOutputStream(path), result); ;
         } catch (IOException e) {
             throw new JsonWriterException(e);
