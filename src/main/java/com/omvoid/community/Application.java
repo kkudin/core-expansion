@@ -5,7 +5,7 @@ import com.omvoid.community.exception.GraphReaderException;
 import com.omvoid.community.exception.JsonWriterException;
 import com.omvoid.community.models.CmdArguments;
 import com.omvoid.community.models.DefaultCoreExpansionResults;
-import com.omvoid.community.utils.CommandLineArgumentExtractor;
+import com.omvoid.community.utils.CommandLineUtil;
 import com.omvoid.community.utils.GraphReader;
 import com.omvoid.community.utils.JsonResultWriter;
 import org.apache.commons.cli.ParseException;
@@ -15,10 +15,12 @@ import java.util.concurrent.TimeUnit;
 public class Application {
 
     public static void main(String[] args) {
+        CommandLineUtil commandLineUtil = new CommandLineUtil();
         try {
-            CmdArguments cmdArguments = new CommandLineArgumentExtractor().extractArguments(args);
+            commandLineUtil = new CommandLineUtil();
+            CmdArguments cmdArguments = commandLineUtil.extractArguments(args);
 
-            System.out.println(cmdArguments);
+            //System.out.println(cmdArguments);
 
             GraphReader reader = new GraphReader();
             var graph = reader.readGraph(cmdArguments);
@@ -34,12 +36,12 @@ public class Application {
 
             time = System.nanoTime() - time;
 
-            System.out.println("Computing communities success. It take " + TimeUnit.SECONDS.convert(time, TimeUnit.NANOSECONDS) + " seconds");
+            System.out.printf("Computing communities success. It took %d seconds\n",TimeUnit.SECONDS.convert(time, TimeUnit.NANOSECONDS));
 
             JsonResultWriter jsonResultWriter = new JsonResultWriter();
             jsonResultWriter.writeResult((DefaultCoreExpansionResults) results, cmdArguments.getOutputDirectory());
 
-            System.out.println("Result was written to the " + cmdArguments.getOutputDirectory() + " directory");
+            System.out.printf("Result was written to '%s' directory", cmdArguments.getOutputDirectory());
         } catch (JsonWriterException e) {
             System.out.println("Error while write result to file. Aborting...");
             e.printStackTrace();
@@ -47,8 +49,8 @@ public class Application {
             System.out.println("Error while computing communities. Aborting...");
             e.printStackTrace();
         } catch (ParseException e) {
-            System.out.println("Error while parsing command line options. Aborting...");
-            e.printStackTrace();
+            //System.out.println("Error while parsing command line options");
+            commandLineUtil.printHelp();
         } catch (GraphReaderException e) {
             System.out.println("Error while read graph. Aborting...");
             e.printStackTrace();
@@ -56,6 +58,5 @@ public class Application {
             System.out.println("Got unexpected exception. Aborting...");
             e.printStackTrace();
         }
-
     }
 }
