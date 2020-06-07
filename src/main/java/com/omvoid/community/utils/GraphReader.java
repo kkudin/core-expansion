@@ -54,8 +54,8 @@ public class GraphReader {
 
         VertexPair vertexPair = new VertexPair();
 
-        vertexPair.setFirstVertex(rawVertex[0]);
-        vertexPair.setSecondVertex(rawVertex[1]);
+        vertexPair.setFirstVertex(rawVertex[0].trim());
+        vertexPair.setSecondVertex(rawVertex[1].trim());
 
         if (vertexPair.getFirstVertex().equals(vertexPair.getSecondVertex()))
             throw new GraphReaderException("Line " + line + " this algorithm does not support loop");

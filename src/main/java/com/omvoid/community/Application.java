@@ -4,7 +4,6 @@ import com.omvoid.community.corexp.CoreExpansionAlgorithmImpl;
 import com.omvoid.community.exception.GraphReaderException;
 import com.omvoid.community.exception.JsonWriterException;
 import com.omvoid.community.models.CmdArguments;
-import com.omvoid.community.models.DefaultCoreExpansionResults;
 import com.omvoid.community.utils.CommandLineUtil;
 import com.omvoid.community.utils.GraphReader;
 import com.omvoid.community.utils.JsonResultWriter;
@@ -41,18 +40,18 @@ public class Application {
 
             System.out.printf("Result was written to '%s' directory", cmdArguments.getOutputDirectory());
         } catch (JsonWriterException e) {
-            System.out.println("Error while write result to file. Aborting...");
+            System.err.println("Error while write result to file. Aborting...");
             e.printStackTrace();
         } catch (InterruptedException e) {
-            System.out.println("Error while computing communities. Aborting...");
+            System.err.println("Error while computing communities. Aborting...");
             e.printStackTrace();
         } catch (ParseException e) {
             commandLineUtil.printHelp();
         } catch (GraphReaderException e) {
-            System.out.println("Error while read graph. Aborting...");
+            System.err.println("Error while read graph. Aborting...");
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("Got unexpected exception. Aborting...");
+            System.err.println("Got unexpected exception. Aborting...");
             e.printStackTrace();
         }
     }
