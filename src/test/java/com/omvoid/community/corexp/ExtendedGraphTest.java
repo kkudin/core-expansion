@@ -1,6 +1,5 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +17,8 @@ class ExtendedGraphTest {
 
         var result = ca.computeCommunities(graph);
         assert result != null;
-        Assertions.assertEquals(result.getCommunities().size(), 2);
-        Set<Integer> comm1 = result.getCommunities().values().iterator().next();
+        Assertions.assertEquals(result.getCommunitiesMap().size(), 2);
+        Set<Integer> comm1 = result.getCommunitiesMap().values().iterator().next();
         if (comm1.size() == 6) {
             for (int expected : List.of(1, 2, 3, 4, 5, 11)) {
                 assert comm1.contains(expected);

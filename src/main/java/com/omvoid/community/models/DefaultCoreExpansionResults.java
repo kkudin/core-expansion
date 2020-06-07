@@ -1,4 +1,4 @@
-package com.omvoid.community;
+package com.omvoid.community.models;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,25 +20,25 @@ public class DefaultCoreExpansionResults<V> implements CoreExpansionResults<V> {
     }
 
     @Override
-    public Map<V, Set<V>> getCommunities() {
+    public Map<V, Set<V>> getCommunitiesMap() {
         return mapOfCommunities;
     }
 
-    @Override
-    public Optional<V> getCommunity(V vertex) {
-        if (vertexCommunityMapping.containsKey(vertex)) {
-            return Optional.of(vertexCommunityMapping.get(vertex));
-        } else {
-            return Optional.empty();
-        }
+    public Map<V, V> getVertexCommunityMapping() {
+        return vertexCommunityMapping;
+    }
+
+    public Map<V, Set<V>> getCores() {
+        return cores;
     }
 
     @Override
-    public Optional<Set<V>> getCores(V community) {
-        if (cores.containsKey(community)) {
-            return Optional.of(cores.get(community));
-        } else {
-            return Optional.empty();
-        }
+    public Map<V, V> getVertexCommunityMap() {
+        return vertexCommunityMapping;
+    }
+
+    @Override
+    public Map<V, Set<V>> getVertexCoresMap() {
+        return cores;
     }
 }

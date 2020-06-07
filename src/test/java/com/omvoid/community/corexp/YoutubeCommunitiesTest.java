@@ -1,6 +1,5 @@
 package com.omvoid.community.corexp;
 
-import com.omvoid.community.CommunityAlgorithm;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -24,13 +23,13 @@ class YoutubeCommunitiesTest {
         var result = ca.computeCommunities(graph);
         System.out.printf("Done in %d seconds\n", now.until(LocalTime.now(), ChronoUnit.SECONDS));
         assert result != null;
-        System.out.printf("Found %d communities.\n", result.getCommunities().size());
+        System.out.printf("Found %d communities.\n", result.getCommunitiesMap().size());
 
         TreeMap<Integer, Integer> commSizes = new TreeMap<>(
                 Comparator.comparing(k -> -k)
         );
 
-        result.getCommunities().values().forEach(comm -> {
+        result.getCommunitiesMap().values().forEach(comm -> {
             int size = comm.size();
             commSizes.put(
                     size,
