@@ -15,3 +15,21 @@ If You want to use it in Your work please refer the original paper:
 }
 ```
 
+How to use it?
+You need java with version 11+
+
+1) Clone repository https://github.com/kkudin/core-expansion
+git clone https://github.com/kkudin/core-expansion.git
+
+2) Build it with maven
+mvn clean package
+
+3) In target folder you can find .jar files, you need jar with dependencies
+run java -jar *-jar-with-dependencies.jar <arguments>
+
+Input file is required option
+Available arguments :
+    -c,--comment <arg>      Comment char
+    -d,--delimiter <arg>    Delimiter char
+    -i,--inputFile <arg>    Input file
+    -r,--resultPath <arg>   Result path
