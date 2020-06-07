@@ -13,6 +13,7 @@ public class JsonResultWriter implements ResultWriter {
     private final String COMMUNITIES_MAP_FILE_NAME = "CommunitiesMap.json";
     private final String VERTEX_CORES_MAP_FILE_NAME = "VertexCoresMap.json";
     private final String VERTEX_COMMUNITY_MAP_FILE_NAME = "VertexCommunityMap.json";
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void writeResult(CoreExpansionResults<String> results, String path) throws JsonWriterException {
@@ -22,7 +23,6 @@ public class JsonResultWriter implements ResultWriter {
     }
 
     private void writeAsJson(Object result, String path) throws JsonWriterException {
-        ObjectMapper mapper = new ObjectMapper();
         try {
             new File(path).getParentFile().mkdirs();
             mapper.writeValue(new FileOutputStream(path), result); ;
