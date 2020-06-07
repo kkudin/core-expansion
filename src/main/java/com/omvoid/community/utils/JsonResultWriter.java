@@ -13,9 +13,9 @@ import java.io.IOException;
 public class JsonResultWriter implements ResultWriter {
     @Override
     public void writeResult(DefaultCoreExpansionResults results, String path) throws JsonWriterException {
-        writeAsJson(results.getCommunities(), path + "\\communities.txt");
-        writeAsJson(results.getCores(), path + "\\cores.txt");
-        writeAsJson(results.getVertexCommunityMapping(), path + "\\vertexCommunityMapping.txt");
+        writeAsJson(results.getCommunities(), path + "\\communities.json");
+        writeAsJson(results.getCores(), path + "\\cores.json");
+        writeAsJson(results.getVertexCommunityMapping(), path + "\\vertexCommunityMapping.json");
     }
 
     private void writeAsJson(Object result, String path) throws JsonWriterException {

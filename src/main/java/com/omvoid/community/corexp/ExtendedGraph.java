@@ -1,6 +1,5 @@
 package com.omvoid.community.corexp;
 
-import lombok.Getter;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.jgrapht.Graph;
@@ -11,7 +10,6 @@ import org.jgrapht.util.SupplierUtil;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Getter
 class ExtendedGraph<V,E> {
 
     private final Graph<V,E> graph;
@@ -52,5 +50,17 @@ class ExtendedGraph<V,E> {
 
     public FastutilMapIntVertexGraph<DefaultWeightedEdge> getFastutilGraph() {
         return fastutilGraph;
+    }
+
+    public Graph<V, E> getGraph() {
+        return graph;
+    }
+
+    public IntDoubleHashMap getVertexWeights() {
+        return vertexWeights;
+    }
+
+    public ObjectIntHashMap<V> getMappedVertex() {
+        return mappedVertex;
     }
 }
