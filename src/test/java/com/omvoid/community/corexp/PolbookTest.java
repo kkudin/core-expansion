@@ -30,8 +30,8 @@ class PolbookTest {
 
         var result = ca.computeCommunities(graph);
         assertThat(result).isNotNull();
-        assertThat(result.getCommunities().size()).isEqualTo(2);
-        var iter = result.getCommunities().values().iterator();
+        assertThat(result.getCommunitiesMap().size()).isEqualTo(2);
+        var iter = result.getCommunitiesMap().values().iterator();
         var comm1 = iter.next();
         var comm2 = iter.next();
 

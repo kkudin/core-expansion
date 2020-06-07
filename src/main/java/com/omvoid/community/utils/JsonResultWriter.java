@@ -3,6 +3,7 @@ package com.omvoid.community.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omvoid.community.exception.JsonWriterException;
+import com.omvoid.community.models.CoreExpansionResults;
 import com.omvoid.community.models.DefaultCoreExpansionResults;
 
 import java.io.BufferedWriter;
@@ -12,10 +13,10 @@ import java.io.IOException;
 
 public class JsonResultWriter implements ResultWriter {
     @Override
-    public void writeResult(DefaultCoreExpansionResults results, String path) throws JsonWriterException {
-        writeAsJson(results.getCommunities(), path + "\\communities.json");
-        writeAsJson(results.getCores(), path + "\\cores.json");
-        writeAsJson(results.getVertexCommunityMapping(), path + "\\vertexCommunityMapping.json");
+    public void writeResult(CoreExpansionResults results, String path) throws JsonWriterException {
+        writeAsJson(results.getCommunitiesMap(), path + "\\CommunitiesMap.json");
+        writeAsJson(results.getVertexCoresMap(), path + "\\VertexCoresMap.json");
+        writeAsJson(results.getVertexCommunityMap(), path + "\\VertexCommunityMap.json");
     }
 
     private void writeAsJson(Object result, String path) throws JsonWriterException {

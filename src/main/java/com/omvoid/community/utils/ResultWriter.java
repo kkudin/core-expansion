@@ -1,10 +1,9 @@
 package com.omvoid.community.utils;
 
 import com.omvoid.community.exception.JsonWriterException;
-import com.omvoid.community.models.DefaultCoreExpansionResults;
+import com.omvoid.community.models.CoreExpansionResults;
 
 public interface ResultWriter {
 
-    //TODO rework for using interface CoreExpansionResults
-    public void writeResult(DefaultCoreExpansionResults results, String path) throws JsonWriterException;
+    void writeResult(CoreExpansionResults results, String path) throws JsonWriterException;
 }
