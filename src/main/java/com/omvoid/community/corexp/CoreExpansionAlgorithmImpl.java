@@ -11,11 +11,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
-    private final VertexWeightProcessor vertexWeightProcessor = new VertexWeightProcessor();
-    private final EdgeWeightProcessor edgeWeightProcessor = new EdgeWeightProcessor();
+    private final VertexWeightProcessor vertexWeightProcessor;
+    private final EdgeWeightProcessor edgeWeightProcessor;
     private final CoresFinder coresFinder = new CoresFinder();
-    private final ClosesVertexFinder closesVertexFinder = new ClosesVertexFinder();
+    private final ClosesVertexFinder closesVertexFinder;
+    private final int threadCount;
 
+    public CoreExpansionAlgorithmImpl(int threadCount) {
+        this.threadCount = threadCount;
+        vertexWeightProcessor = new VertexWeightProcessor(threadCount);
+        edgeWeightProcessor = new EdgeWeightProcessor(threadCount);
+        closesVertexFinder = new ClosesVertexFinder(threadCount);
+    }
+
+    public CoreExpansionAlgorithmImpl() {
+        this(Runtime.getRuntime().availableProcessors());
+    }
 
     public <V,E> CoreExpansionResults<V> computeCommunities(Graph<V,E> graph) throws InterruptedException {
 
@@ -88,5 +99,9 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
         return new DefaultCoreExpansionResults<>(
                 communities, vCommMapping, newCores
         );
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 }
