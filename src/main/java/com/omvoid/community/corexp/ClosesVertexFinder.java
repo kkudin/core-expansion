@@ -13,6 +13,15 @@ import java.util.concurrent.TimeUnit;
 
 class ClosesVertexFinder {
 
+    private int threadCount = Runtime.getRuntime().availableProcessors();
+
+    public ClosesVertexFinder(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+    public ClosesVertexFinder() {
+    }
+
     /**
      * A node is called unclassified if it is not part of any core.
      * For each unclassified node, try finding its closest core by
@@ -36,7 +45,7 @@ class ClosesVertexFinder {
         FastutilMapIntVertexGraph<DefaultWeightedEdge> g = extendedGraph.getFastutilGraph();
         IntIntHashMap results = new IntIntHashMap(unclassifiedVertexes.size());
 
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
 
         unclassifiedVertexes.forEach(
                 v -> pool.submit(new findCoreTask(cores, v, g, results))
@@ -107,5 +116,9 @@ class ClosesVertexFinder {
                 results.put(v, -1); // Vertex is left unclassified until the next iteration.
             }
         }
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 }

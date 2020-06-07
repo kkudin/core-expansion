@@ -12,6 +12,13 @@ import java.util.concurrent.TimeUnit;
 
 class EdgeWeightProcessor {
 
+    private int threadCount = Runtime.getRuntime().availableProcessors();
+    private double trasholdFactor = 0.01;
+
+    public EdgeWeightProcessor(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
     /**
      * Given the network graph G(V,E), compute the weight of
      * each edge e in E by calling the function Compute_ Edge_Weights (cf. Algorithm 2).
@@ -21,9 +28,9 @@ class EdgeWeightProcessor {
     public <V,E> void calculateWeight(ExtendedGraph<V,E> extendedGraph) throws InterruptedException {
         final var graph = extendedGraph.getFastutilGraph();
 
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
         Map<Integer, IntHashSet> cache = new ConcurrentHashMap<>(graph.vertexSet().size());
-        int bigNNThreshold = (int) (graph.vertexSet().size() * 0.1);
+        int bigNNThreshold = (int) (graph.vertexSet().size() * trasholdFactor);
 
         graph.edgeSet().forEach(e -> pool.submit(new processEdgeTask(graph, e, cache, bigNNThreshold)));
 
@@ -93,5 +100,17 @@ class EdgeWeightProcessor {
 
             graph.setEdgeWeight(e, w);
         }
+    }
+
+    public double getTrasholdFactor() {
+        return trasholdFactor;
+    }
+
+    public void setTrasholdFactor(double trasholdFactor) {
+        this.trasholdFactor = trasholdFactor;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 }

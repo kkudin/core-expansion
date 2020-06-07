@@ -10,6 +10,15 @@ import java.util.concurrent.TimeUnit;
 
 class VertexWeightProcessor {
 
+    private int threadCount = Runtime.getRuntime().availableProcessors();
+
+    public VertexWeightProcessor(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+    public VertexWeightProcessor() {
+    }
+
     /**
      * Given the weighted graph obtained from step 1, compute the weight
      * of each node n in V by calling the function Compute_Node_Weights (cf. Algorithm 3).
@@ -21,7 +30,7 @@ class VertexWeightProcessor {
         final FastutilMapIntVertexGraph<DefaultWeightedEdge> graph = extendedGraph.getFastutilGraph();
         final var vertexMap = extendedGraph.getVertexWeights();
 
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 12);
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
 
         graph.vertexSet().forEach(v -> pool.submit(new calculateWeightTask(v, graph, vertexMap)));
 
@@ -52,5 +61,9 @@ class VertexWeightProcessor {
 
             vertexMap.put(v, w);
         }
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 }
