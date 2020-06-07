@@ -7,25 +7,22 @@ import java.util.Set;
 public interface CoreExpansionResults<V> {
     /**
      * Return Mapping from Communities cores to list of communities members.
+     *
      * @return Map from cores to list of members
      */
-    Map<V, Set<V>> getCommunities();
+    Map<V, Set<V>> getCommunitiesMap();
 
     /**
-     * Return community for given vertex.
-     * Return null if vertex hasn't been classified.
+     * Return Mapping from Communities members to main community core.
      *
-     * @param vertex vertex
      * @return community or null
      */
-    Optional<V> getCommunity(V vertex);
+    Map<V, V> getVertexCommunityMap();
 
     /**
-     * Return core vertices for given community.
-     * Return null of there isn't such community.
+     * Return Mapping from Communities members to set of community cores.
      *
-     * @param community community
      * @return List of cores
      */
-    Optional<Set<V>> getCores(V community);
+    Map<V, Set<V>> getVertexCoresMap();
 }
