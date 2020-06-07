@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class JsonResultWriter implements ResultWriter {
     @Override
-    public void writeResult(CoreExpansionResults results, String path) throws JsonWriterException {
+    public void writeResult(CoreExpansionResults<String> results, String path) throws JsonWriterException {
         writeAsJson(results.getCommunitiesMap(), path + "\\CommunitiesMap.json");
         writeAsJson(results.getVertexCoresMap(), path + "\\VertexCoresMap.json");
         writeAsJson(results.getVertexCommunityMap(), path + "\\VertexCommunityMap.json");

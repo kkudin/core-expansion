@@ -20,8 +20,6 @@ public class Application {
             commandLineUtil = new CommandLineUtil();
             CmdArguments cmdArguments = commandLineUtil.extractArguments(args);
 
-            //System.out.println(cmdArguments);
-
             GraphReader reader = new GraphReader();
             var graph = reader.readGraph(cmdArguments);
 
@@ -39,7 +37,7 @@ public class Application {
             System.out.printf("Computing communities success. It took %d seconds\n",TimeUnit.SECONDS.convert(time, TimeUnit.NANOSECONDS));
 
             JsonResultWriter jsonResultWriter = new JsonResultWriter();
-            jsonResultWriter.writeResult((DefaultCoreExpansionResults) results, cmdArguments.getOutputDirectory());
+            jsonResultWriter.writeResult(results, cmdArguments.getOutputDirectory());
 
             System.out.printf("Result was written to '%s' directory", cmdArguments.getOutputDirectory());
         } catch (JsonWriterException e) {
@@ -49,7 +47,6 @@ public class Application {
             System.out.println("Error while computing communities. Aborting...");
             e.printStackTrace();
         } catch (ParseException e) {
-            //System.out.println("Error while parsing command line options");
             commandLineUtil.printHelp();
         } catch (GraphReaderException e) {
             System.out.println("Error while read graph. Aborting...");

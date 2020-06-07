@@ -1,29 +1,29 @@
 package com.omvoid.community.models;
 
 public class VertexPair {
-    private Integer firstVertex;
-    private Integer secondVertex;
+    private String firstVertex;
+    private String secondVertex;
 
-    public VertexPair() {}
+    public VertexPair(){}
 
-    public VertexPair(Integer firstVertex, Integer secondVertex) {
+    public VertexPair(String firstVertex, String secondVertex) {
         this.firstVertex = firstVertex;
         this.secondVertex = secondVertex;
     }
 
-    public Integer getFirstVertex() {
+    public String getFirstVertex() {
         return firstVertex;
     }
 
-    public void setFirstVertex(Integer firstVertex) {
+    public void setFirstVertex(String firstVertex) {
         this.firstVertex = firstVertex;
     }
 
-    public Integer getSecondVertex() {
+    public String getSecondVertex() {
         return secondVertex;
     }
 
-    public void setSecondVertex(Integer secondVertex) {
+    public void setSecondVertex(String secondVertex) {
         this.secondVertex = secondVertex;
     }
 }

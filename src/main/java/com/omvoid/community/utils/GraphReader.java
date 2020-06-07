@@ -11,9 +11,9 @@ import java.io.*;
 
 public class GraphReader {
 
-    public Graph<Integer, DefaultWeightedEdge> readGraph(CmdArguments cmdArguments) throws GraphReaderException {
+    public Graph<String, DefaultWeightedEdge> readGraph(CmdArguments cmdArguments) throws GraphReaderException {
 
-        Graph<Integer, DefaultWeightedEdge> graph = new DefaultUndirectedGraph<>(DefaultWeightedEdge.class);
+        Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedGraph<>(DefaultWeightedEdge.class);
 
         BufferedReader reader = new BufferedReader(getFileReader(cmdArguments));
 
@@ -54,12 +54,8 @@ public class GraphReader {
 
         VertexPair vertexPair = new VertexPair();
 
-        try {
-            vertexPair.setFirstVertex(Integer.parseInt(rawVertex[0]));
-            vertexPair.setSecondVertex(Integer.parseInt(rawVertex[1]));
-        } catch (NumberFormatException e) {
-            throw new GraphReaderException("Line " + line + " can't parse vertex pair");
-        }
+        vertexPair.setFirstVertex(rawVertex[0]);
+        vertexPair.setSecondVertex(rawVertex[1]);
 
         if (vertexPair.getFirstVertex().equals(vertexPair.getSecondVertex()))
             throw new GraphReaderException("Line " + line + " this algorithm does not support loop");
