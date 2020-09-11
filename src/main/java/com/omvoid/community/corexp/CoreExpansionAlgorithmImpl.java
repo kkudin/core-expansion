@@ -1,5 +1,6 @@
 package com.omvoid.community.corexp;
 
+import com.omvoid.community.metrics.Modularity;
 import com.omvoid.community.models.CoreExpansionResults;
 import com.omvoid.community.models.DefaultCoreExpansionResults;
 import com.omvoid.community.similarities.AvailableSimilarities;
@@ -130,6 +131,11 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
         var vCommMapping = new HashMap<V, V>();
         vertexCommMapping.forEachKeyValue((k, v) -> vCommMapping.put(reversed.get(k), reversed.get(v)));
+
+        System.out.printf(
+                "Unweighted modularity is %.2f\n",
+                Modularity.unweighted(extendedGraph.getFastutilGraph(), vertexCommMapping)
+        );
 
         return new DefaultCoreExpansionResults<>(
                 communities, vCommMapping, newCores

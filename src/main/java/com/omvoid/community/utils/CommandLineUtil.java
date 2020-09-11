@@ -39,7 +39,7 @@ public class CommandLineUtil {
         options.addOption("d", "delimiter", true, "Delimiter char");
         options.addOption("c", "comment", true, "Comment char");
         options.addOption("r", "resultPath", true, "Result path");
-        options.addOption("w", "isWeighted", false, "Is graph weighted?");
+        options.addOption("w", "isWeighted", true, "Is graph weighted?");
         return options;
     }
 

@@ -36,6 +36,11 @@ class CoresFinder {
             int v, IntDoubleHashMap vertexWeights,
             IntHashSet visited, IntObjectHashMap<IntHashSet> cores,
             FastutilMapIntVertexGraph<DefaultWeightedEdge> g) {
+
+        if (visited.contains(v)) {
+            return;
+        }
+
         double vW = vertexWeights.get(v);
 
         if (Double.compare(vW, .0) == 0) {
@@ -72,10 +77,10 @@ class CoresFinder {
         equalsWeightsNodes.forEach(
                 candidate -> {
                     if (visited.contains(candidate)) {
-                        visited.add(v);
                         return;
                     }
 
+                    visited.add(candidate);
                     coreVertices.add(candidate);
                 }
         );

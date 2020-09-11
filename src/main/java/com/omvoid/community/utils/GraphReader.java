@@ -1,19 +1,22 @@
 package com.omvoid.community.utils;
 
-import com.omvoid.community.models.CmdArguments;
 import com.omvoid.community.exception.GraphReaderException;
+import com.omvoid.community.models.CmdArguments;
 import com.omvoid.community.models.VertexPair;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class GraphReader {
 
     public Graph<String, DefaultWeightedEdge> readGraph(CmdArguments cmdArguments) throws GraphReaderException {
 
-        Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedGraph<>(DefaultWeightedEdge.class);
+        Graph<String, DefaultWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
         BufferedReader reader = new BufferedReader(getFileReader(cmdArguments));
 
@@ -22,6 +25,9 @@ public class GraphReader {
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(cmdArguments.getCommentStartWith())) continue;
                 VertexPair vertexPair = getVertexPair(line, cmdArguments.getDelimiter());
+                if (vertexPair == null) {
+                    continue;
+                }
 
                 double edgeWeight;
                 if (cmdArguments.getIsWeighted()) {
@@ -39,7 +45,10 @@ public class GraphReader {
                 }
 
                 DefaultWeightedEdge e = graph.addEdge(vertexPair.getFirstVertex(), vertexPair.getSecondVertex());
-                graph.setEdgeWeight(e, edgeWeight);
+
+                if (e != null) {
+                    graph.setEdgeWeight(e, edgeWeight);
+                }
             }
         } catch (IOException e) {
             throw new GraphReaderException(e);
@@ -65,8 +74,10 @@ public class GraphReader {
         vertexPair.setFirstVertex(rawVertex[0].trim());
         vertexPair.setSecondVertex(rawVertex[1].trim());
 
-        if (vertexPair.getFirstVertex().equals(vertexPair.getSecondVertex()))
-            throw new GraphReaderException("Line " + line + " this algorithm does not support loop");
+        if (vertexPair.getFirstVertex().equals(vertexPair.getSecondVertex())) {
+            System.err.println("Line " + line + " this algorithm does not support loop");
+            return null;
+        }
 
         return vertexPair;
     }

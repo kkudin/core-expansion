@@ -28,7 +28,10 @@ public class Application {
 
             long time = System.nanoTime();
 
-            CoreExpansionAlgorithmImpl coreExpansionAlgorithm = new CoreExpansionAlgorithmImpl();
+            CoreExpansionAlgorithmImpl coreExpansionAlgorithm = new CoreExpansionAlgorithmImpl(
+                    Runtime.getRuntime().availableProcessors(),
+                    cmdArguments.getIsWeighted()
+            );
             var results = coreExpansionAlgorithm.computeCommunities(graph);
 
             time = System.nanoTime() - time;

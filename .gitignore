@@ -125,3 +125,5 @@ fabric.properties
 .classpath
 .project
 .settings
+/src/test/resources/my_graph.txt
+*.mtx
