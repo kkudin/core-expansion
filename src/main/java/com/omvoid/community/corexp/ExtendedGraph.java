@@ -38,6 +38,7 @@ class ExtendedGraph<V,E> {
             if (!fastutilGraph.containsVertex(dst)) {fastutilGraph.addVertex(dst);}
             if (!fastutilGraph.containsEdge(src, dst)) {
                 fastutilGraph.addEdge(src, dst);
+                fastutilGraph.setEdgeWeight(fastutilGraph.getEdge(src, dst), graph.getEdgeWeight(e));
             } else {
                 System.err.printf(
                         "Warning! Multi-edges graphs don't support yet! Edge %s-%s has been ignored!",

@@ -5,7 +5,7 @@ import org.jgrapht.graph.AbstractBaseGraph;
 
 import java.util.Set;
 
-class NeighbourhoodFinder {
+public class NeighbourhoodFinder {
     public static <E> IntHashSet find(AbstractBaseGraph<Integer, E> g, Integer v) {
         Set<E> edges = g.edgesOf(v);
         IntHashSet result = new IntHashSet(edges.size());

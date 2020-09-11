@@ -5,6 +5,15 @@ public class CmdArguments {
     private String delimiter = ",";
     private String commentStartWith = "#";
     private String outputDirectory = "result";
+    private boolean isWeighted = false;
+
+    public void setIsWeighted(boolean isWeighted) {
+        this.isWeighted = isWeighted;
+    }
+
+    public boolean getIsWeighted() {
+        return isWeighted;
+    }
 
     public String getInputFile() {
         return inputFile;

@@ -23,6 +23,13 @@ public class GraphReader {
                 if (line.startsWith(cmdArguments.getCommentStartWith())) continue;
                 VertexPair vertexPair = getVertexPair(line, cmdArguments.getDelimiter());
 
+                double edgeWeight;
+                if (cmdArguments.getIsWeighted()) {
+                    edgeWeight = Double.parseDouble(line.split(cmdArguments.getDelimiter())[2].strip());
+                } else {
+                    edgeWeight = 1.0;
+                }
+
                 if (!graph.containsVertex(vertexPair.getFirstVertex())) {
                     graph.addVertex(vertexPair.getFirstVertex());
                 }
@@ -31,7 +38,8 @@ public class GraphReader {
                     graph.addVertex(vertexPair.getSecondVertex());
                 }
 
-                graph.addEdge(vertexPair.getFirstVertex(), vertexPair.getSecondVertex());
+                DefaultWeightedEdge e = graph.addEdge(vertexPair.getFirstVertex(), vertexPair.getSecondVertex());
+                graph.setEdgeWeight(e, edgeWeight);
             }
         } catch (IOException e) {
             throw new GraphReaderException(e);

@@ -26,6 +26,10 @@ public class CommandLineUtil {
             cmdArguments.setOutputDirectory(cmd.getOptionValue("r"));
         }
 
+        if (cmd.hasOption("w")) {
+            cmdArguments.setIsWeighted(Boolean.parseBoolean(cmd.getOptionValue("w")));
+        }
+
         return cmdArguments;
     }
 
@@ -35,6 +39,7 @@ public class CommandLineUtil {
         options.addOption("d", "delimiter", true, "Delimiter char");
         options.addOption("c", "comment", true, "Comment char");
         options.addOption("r", "resultPath", true, "Result path");
+        options.addOption("w", "isWeighted", false, "Is graph weighted?");
         return options;
     }
 
@@ -48,6 +53,7 @@ public class CommandLineUtil {
                 "    Delimiter = ':'\n" +
                 "    Comment line start with symbol = '#'\n" +
                 "    Output directory = 'result'\n" +
+                "    Is weighted = false\n" +
                 "For source code you can follow https://github.com/kkudin/core-expansion";
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp("Core expansion algorithm", header, getOptions(), footer);
