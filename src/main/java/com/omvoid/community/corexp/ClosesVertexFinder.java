@@ -25,7 +25,7 @@ class ClosesVertexFinder {
     /**
      * A node is called unclassified if it is not part of any core.
      * For each unclassified node, try finding its closest core by
-     * calling the function Find_Closest_Core (cf. Algorithm 4).
+     * calling the function Find_Closest_Core (cf. Algorithm 4).
      * When every unclassified node is processed, perform the addition
      * operations, i.e., add the nodes to the corresponding cores.
      * A node n has C as closest core if this maximizes the sum of

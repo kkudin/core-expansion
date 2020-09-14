@@ -1,7 +1,9 @@
 package com.omvoid.community.corexp;
 
+import com.omvoid.community.metrics.Modularity;
 import com.omvoid.community.models.CoreExpansionResults;
 import com.omvoid.community.models.DefaultCoreExpansionResults;
+import com.omvoid.community.similarities.AvailableSimilarities;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -20,15 +22,19 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
     private final ClosesVertexFinder closesVertexFinder;
     private final int threadCount;
 
-    public CoreExpansionAlgorithmImpl(int threadCount) {
+    public CoreExpansionAlgorithmImpl(int threadCount, boolean isWeighted) {
         this.threadCount = threadCount;
         vertexWeightProcessor = new VertexWeightProcessor(threadCount);
-        edgeWeightProcessor = new EdgeWeightProcessor(threadCount);
+        if (isWeighted) {
+            edgeWeightProcessor = new EdgeWeightProcessor(threadCount, AvailableSimilarities.COSINE_SIMILARITY);
+        } else {
+            edgeWeightProcessor = new EdgeWeightProcessor(threadCount, AvailableSimilarities.JACCARD_SIMILARITY);
+        }
         closesVertexFinder = new ClosesVertexFinder(threadCount);
     }
 
     public CoreExpansionAlgorithmImpl() {
-        this(Runtime.getRuntime().availableProcessors());
+        this(Runtime.getRuntime().availableProcessors(), false);
     }
 
     public <V,E> CoreExpansionResults<V> computeCommunities(Graph<V,E> graph) throws InterruptedException {
@@ -125,6 +131,11 @@ public class CoreExpansionAlgorithmImpl implements CommunityAlgorithm {
 
         var vCommMapping = new HashMap<V, V>();
         vertexCommMapping.forEachKeyValue((k, v) -> vCommMapping.put(reversed.get(k), reversed.get(v)));
+
+        System.out.printf(
+                "Unweighted modularity is %.2f\n",
+                Modularity.unweighted(extendedGraph.getFastutilGraph(), vertexCommMapping)
+        );
 
         return new DefaultCoreExpansionResults<>(
                 communities, vCommMapping, newCores
